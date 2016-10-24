@@ -14,7 +14,7 @@ Ansible module to create a HA kubernetes cluster using latest release 1.4. There
 Following the below steps to create k8s HA setup on Centos7. I have tested and installed it on Centos7 only.
 - Prerequisite
   - Ansbile
-  - All kubernetes master/node has password-less access from Ansible host
+  - All kubernetes master/node should have password-less access from Ansible host
 
 Now download Kubernetes-Ansible module and change variable according to k8s setup in group variable file
 all.yml, located in group_vars directory. Please read this file carefully and modify according to your need. 
