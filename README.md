@@ -9,23 +9,7 @@ Ansible module to create a HA kubernetes cluster using latest release 1.4. There
 - sslcert - create all ssl certificates require to run secure K8S cluster
 - yum-repo - create epel and kubernetes-1.4 package repo
 
-Module will perform following steps:
-- Install epel and kube repo
-- Install etcd cluster
-- Install docker
-- Create haproxy config file for API server HA
-- Create all certificates for API and Load-balancer
-- Setup master 
-    - Install kubelet, kubectl, kubernetes-cni
-    - create manifest file and create master components(api, controller and scheduler)
-    - start kubelet in non-schedule mode
-- Setup node
-    - Install kubelet and kubernetes-cni
-    - create ssl cert for node
-    - start kubelet
-- Create addon(kube-proxy, kube-dns, kube-dashboard, weavnet, weavescope and cluster monitoring)
-    - copy all addon file on one master servers
-    - create addon
+
 
 Following the below steps to create k8s HA setup on Centos7. I have tested and installed it on Centos7 only.
 - Prerequisite
