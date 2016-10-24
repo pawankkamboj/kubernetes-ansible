@@ -33,8 +33,11 @@ Following the below steps to create k8s HA setup on Centos7. I have tested and i
   - All kubernetes master/node has password-less access from Ansible host
 
 Now download Kubernetes-Ansible module and change variable according to k8s setup in group variable file
-all.yml, located in group_vars. Please read this file carefully and the run ha-cluster.yaml to create k8s HA cluster.
-Addon roles should be run after cluster fully operation.
+all.yml, located in group_vars directory. Please read this file carefully and modify according to your need. 
+
+Run cluster.yml playbook to create k8s HA cluster.
+
+Note - Addon roles should be run after cluster is fully operational.
 
 
 
