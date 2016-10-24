@@ -1,0 +1,62 @@
+---
+# This playbook deploys a kubernetes cluster with the default addons.
+
+- hosts: all
+  roles:
+    - yum-repo
+  tags:
+    - yum-repo
+
+# Install etcd
+- hosts: etcd
+  roles:
+   -   etcd
+  tags:
+    - etcd
+
+# Install docker
+- hosts: all
+  roles:
+    - docker
+  tags:
+    - docker
+
+# install haproxy
+- hosts: haproxy
+  roles:
+    - haproxy
+  tags:
+    - haproxy
+
+# install ssl cert
+- hosts: sslhost
+  roles:
+     -  sslcert
+  tags:
+     -  sslcert
+
+# install kubernetes master services
+- hosts: masters
+  roles:
+    - master
+  tags:
+    - master
+
+# install kubernetes on the nodes
+- hosts: node
+  roles:
+    - node
+  tags:
+    - node
+
+# launch addons
+# run only cluster is fully operation
+- hosts: masters
+  roles:
+    -  addon
+  tags:
+    - addon
+    - dns
+    - proxy
+    - weave
+    - dashboard

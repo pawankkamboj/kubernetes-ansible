@@ -1,0 +1,8 @@
+[etcd]
+#define here etcd cluster host
+[masters]
+#- define here master servers
+[node]
+#- define here node server
+[sslhost]
+# host where ssl create, it should be ansible host where you run play book
