@@ -1,5 +1,7 @@
 # HA-kubernetes-ansible
-Ansible module to create a HA kubernetes cluster using latest release 1.4. There are 8 roles define in this ansible module.
+Ansible module to create a Highly Available kubernetes cluster using latest release 1.4. 
+
+There are 8 roles define in this ansible module.
 - addon - to create addon service, kube-proxy, kube-dns, kube-dashboard, weavnet, weavescope-ui and cluster-monitoring using heapster and grafana/infuxdb
 - docker - install latest docker release on all cluster nodes
 - etcd - setup etcd cluster
@@ -10,16 +12,15 @@ Ansible module to create a HA kubernetes cluster using latest release 1.4. There
 - yum-repo - create epel and kubernetes-1.4 package repo
 
 
-
-Following the below steps to create k8s HA setup on Centos7. I have tested and installed it on Centos7 only.
+Following the below steps to create Kubernetes HA setup on Centos-7.
 - Prerequisite
   - Ansbile
   - All kubernetes master/node should have password-less access from Ansible host
 
-Now download Kubernetes-Ansible module and change variable according to k8s setup in group variable file
-all.yml, located in group_vars directory. Please read this file carefully and modify according to your need. 
+Download Kubernetes-Ansible module and set up variable according to need in group variable file
+all.yml. Please read this file carefully and modify according to your need. 
 
-Run cluster.yml playbook to create k8s HA cluster.
+Run cluster.yml playbook to create Kubernetes HA cluster.
 
 Note - Addon roles should be run after cluster is fully operational.
 
