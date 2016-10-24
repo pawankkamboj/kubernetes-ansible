@@ -1,9 +1,15 @@
 # HA-kubernetes-ansible
-Set up Kubernetes HA using Ansible
+Ansible module to create a HA kubernetes cluster using latest release 1.4. There are 8 roles define in this ansible module.
+- addon - to create addon service, kube-proxy, kube-dns, kube-dashboard, weavnet, weavescope-ui and cluster-monitoring using heapster and grafana/infuxdb
+- docker - install latest docker release on all cluster nodes
+- etcd - setup etcd cluster
+- haproxy - setup haproxy for API service HA, ignore it if LB already available.
+- master - setup kubernetes master service - kube-apiserver, kube-controller, kube-scheduler, kubectl client
+- node - setup kubernetes node service - kubelet
+- sslcert - create all ssl certificates require to run secure K8S cluster
+- yum-repo - create epel and kubernetes-1.4 package repo
 
-Ansible module to create a HA kubernetes cluster using latest release 1.4
-
-It will perform following steps:
+Module will perform following steps:
 - Install epel and kube repo
 - Install etcd cluster
 - Install docker
@@ -31,15 +37,7 @@ all.yml, located in group_vars.
 Please read this file carefully and the run setup.sh shell script to create k8s HA cluster.
 Addon roles should be run after cluster fully operation.
 
-There are 8 roles define in this ansible module.
-- addon - to create addon service, kube-proxy, kube-dns, kube-dashboard, weavnet, weavescope-ui and cluster-monitoring using heapster and grafana/infuxdb
-- docker - install latest docker release on all cluster nodes
-- etcd - setup etcd cluster
-- haproxy - setup haproxy for API service HA, ignore it if LB already available.
-- master - setup kubernetes master service - kube-apiserver, kube-controller, kube-scheduler, kubectl client
-- node - setup kubernetes node service - kubelet
-- sslcert - create all ssl certificates require to run secure K8S cluster
-- yum-repo - create epel and kubernetes-1.4 package repo
+
 
 
 
