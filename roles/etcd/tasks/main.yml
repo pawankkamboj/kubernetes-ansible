@@ -1,0 +1,23 @@
+---
+- name: Install etcd
+  action: "{{ ansible_pkg_mgr }}"
+  args:
+        name: etcd
+        state: latest
+  notify:
+    - restart etcd
+
+- name: Create etcd config directory
+  file: path={{ etcd_conf_dir }} state=directory
+
+- name: Write etcd config file
+  template: src=etcd.conf.j2 dest=/etc/etcd/etcd.conf
+  notify:
+    - restart etcd
+
+- name: Enable etcd
+  service: name=etcd enabled=yes
+
+- name: Start etcd
+  service: name=etcd state=started
+  register: etcd_started

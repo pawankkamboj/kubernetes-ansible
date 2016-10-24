@@ -1,0 +1,86 @@
+#- please change IP address and cluster name, dns name according to your need.
+#- kubernetes dir
+kube_config_dir: /etc/kubernetes
+manifest_config_dir: /etc/kubernetes/manifests
+cert_dir: /etc/kubernetes/pki
+master_cert_dir: /opt/kubernetes/pki
+kube_addon_dir: /etc/kubernetes/addon
+#kube_script_dir: /etc/kubernetes/bin
+
+#- image and other variable
+api_image: gcr.io/google_containers/kube-apiserver-amd64:v1.4.0
+controller_image: gcr.io/google_containers/kube-controller-manager-amd64:v1.4.0
+scheduler_image: gcr.io/google_containers/kube-scheduler-amd64:v1.4.0
+kube_proxy_image: gcr.io/google_containers/kube-proxy-amd64:v1.4.0
+
+#- cluster servive ip range
+service_ip_range: 100.64.0.0/12   # setup according to your env
+kubernetes_service_ip: 100.64.0.1 
+#- all certifactes for cluster  
+account_key: /etc/kubernetes/pki/apiserver-key.pem
+ca_cert: /etc/kubernetes/pki/ca.pem
+ca_key: /etc/kubernetes/pki/ca-key.pem
+api_cert: /etc/kubernetes/pki/apiserver.pem
+api_key: /etc/kubernetes/pki/apiserver-key.pem
+admin_key: /etc/kubernetes/pki/admin-key.pem
+admin_cert: /etc/kubernetes/pki/admin.pem
+node_cert: /etc/kubernetes/pki/node.pem
+node_key: /etc/kubernetes/pki/node-key.pem
+
+#- api secure port and api loadbalancer IP
+api_secure_port: 5443 
+api_lb_ip: https://10.1.1.10 # it should be network load balancer IP or Host where Haproxy run
+
+#- kubeconfig file 
+kubeconfig: /etc/kubernetes/kubeconfig
+
+# all master fqdn name - it require to create ssl certificate
+masters_fqdn: ['devmaster.yatra.com', 'devnode1.yatra.com', 'devnode2.yatra.com']
+
+#- cluster dns name and IP
+cluster_name: cluster.local
+
+# kube-proxy addon
+kube_proxy: false # set true only if cluster is fully operation and running
+
+#- kube-dns add-on
+kube_dns: false # set true only if cluster is fully operation and running
+#- if true then set following
+dns_ip: 100.64.0.10 # it should be from cluster service_ip_range
+dns_replicas: 1
+
+#- weave ui port and IP
+weave_net: false # set true only if cluster is fully operation and running
+#- if true then set following
+weaveui_port: 90
+weaveui_ip: 10.1.1.20 # it should be one of cluster node IP
+
+# A list of insecure registrys you might need to define
+insecure_registrys:
+
+# Turn to false to disable cluster monitoring with heapster and influxdb
+cluster_monitoring: false # set true only if cluster is fully operation and running
+#- if true then set following
+heapster_ip: 100.64.0.11 # it should be from cluster service_ip_range
+heapster_port: 80
+grafana_ip: 10.1.1.20 # it should be one of cluster node IP
+grafana_port: 100
+influx_ip: 10.1.1.20 # it should be one of cluster node IP
+influx_port: 8086
+
+# Turn to false to disable the kube-dash addon for this cluster
+kube_dash: false  # set true only if cluster is fully operation and running
+#- if true then set following
+kube_dash_ip: 10.1.1.20 # it should be one of cluster node IP
+kube_dash_port: 80
+
+#- setup haproxy for loadbalancing
+haproxy: true  # set false when already physical loadbalancer available
+haproxy_dir: /etc/haproxy
+haproxy_monitor_port: 9090
+admin_user: admin
+admin_password: admin123
+
+#- ssl cert handler
+sslcert_create: false # set true to create certificate, it should be true during ansible first run
+
