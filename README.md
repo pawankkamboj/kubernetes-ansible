@@ -32,15 +32,14 @@ Please read this file carefully and the run setup.sh shell script to create k8s 
 Addon roles should be run after cluster fully operation.
 
 There are 8 roles define in this ansible module.
-1)addon - to create addon service, kube-proxy, kube-dns, kube-dashboard, weavnet, weavescope-ui and cluster-monitoring using heapster and grafana/infuxdb
-
-2)docker - install latest docker release on all cluster nodes
-3)etcd - setup etcd cluster
-4)haproxy - setup haproxy for API service HA, ignore it if LB already available.
-5)master - setup kubernetes master service - kube-apiserver, kube-controller, kube-scheduler, kubectl client
-6)node - setup kubernetes node service - kubelet
-7)sslcert - create all ssl certificates require to run secure K8S cluster
-8)yum-repo - create epel and kubernetes-1.4 package repo
+- addon - to create addon service, kube-proxy, kube-dns, kube-dashboard, weavnet, weavescope-ui and cluster-monitoring using heapster and grafana/infuxdb
+- docker - install latest docker release on all cluster nodes
+- etcd - setup etcd cluster
+- haproxy - setup haproxy for API service HA, ignore it if LB already available.
+- master - setup kubernetes master service - kube-apiserver, kube-controller, kube-scheduler, kubectl client
+- node - setup kubernetes node service - kubelet
+- sslcert - create all ssl certificates require to run secure K8S cluster
+- yum-repo - create epel and kubernetes-1.4 package repo
 
 
 
