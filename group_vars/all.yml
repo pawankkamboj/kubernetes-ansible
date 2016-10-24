@@ -35,7 +35,7 @@ api_lb_ip: https://10.1.1.10 # it should be network load balancer IP or Host whe
 kubeconfig: /etc/kubernetes/kubeconfig
 
 # all master fqdn name - it require to create ssl certificate
-masters_fqdn: ['devmaster.yatra.com', 'devnode1.yatra.com', 'devnode2.yatra.com']
+masters_fqdn: ['master1.test.com', 'master2.test.com', 'master3.test.com']
 
 #- cluster dns name and IP
 cluster_name: cluster.local
