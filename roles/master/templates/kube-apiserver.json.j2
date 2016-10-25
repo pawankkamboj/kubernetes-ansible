@@ -40,7 +40,7 @@
           "--tls-private-key-file={{ api_key }}",
           "--secure-port={{ api_secure_port }}",
           "--allow-privileged",
-	  "--advertise-address={{ ansible_eth0.ipv4.address }}",
+	  "--advertise-address={{ lb_ip }}",
           "--etcd-servers={% for node in groups['etcd'] %}http://{{ node }}:2379{% if not loop.last %},{% endif %}{% endfor %}"
         ],
         "resources": {
