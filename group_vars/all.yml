@@ -30,6 +30,7 @@ node_key: /etc/kubernetes/pki/node-key.pem
 #- api secure port and api loadbalancer IP
 api_secure_port: 5443 
 api_lb_ip: https://10.1.1.10 # it should be network load balancer IP or Host where Haproxy run
+lb_ip:10.1.1.10
 
 #- kubeconfig file 
 kubeconfig: /etc/kubernetes/kubeconfig
