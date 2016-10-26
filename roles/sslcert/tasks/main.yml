@@ -4,12 +4,11 @@
   register: master_ssl_dir
  
 - name: copy openssl conf file to create certificate
-  when: master_ssl_dir|success
   template: src="openssl.conf.j2" dest={{ master_cert_dir }}/openssl.conf
   register: ssl_config
 
 - name: create kubenetes certificates
-  when: sslcert_create and ssl_config|success
+  when: sslcert_create
   register: create_cert
   command: "{{ item }}"
   with_items:

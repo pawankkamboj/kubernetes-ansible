@@ -9,13 +9,11 @@
   delegate_to: "{{ groups['masters'][0] }}"
 
 - name: copy haproxy json config file
-  when: ha_dir|success
   template: src="haproxy.json.j2" dest={{ manifest_config_dir }}/haproxy.json
   register: ha_json
   delegate_to: "{{ groups['masters'][0] }}"
 
 - name: copy haproxy config file
-  when: ha_json|success
   template: src="haproxy.cfg.j2" dest={{ haproxy_dir }}/haproxy.cfg
   register: ha_config
   delegate_to: "{{ groups['masters'][0] }}"

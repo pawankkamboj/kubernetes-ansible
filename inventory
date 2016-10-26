@@ -1,8 +1,14 @@
 [etcd]
-#define here etcd cluster host
+192.168.61.74
+192.168.61.75
+192.168.61.76
 [masters]
-#- define here master servers
-[node]
-#- define here node server
+192.168.61.74
+192.168.61.75
+192.168.61.76
 [sslhost]
-# host where ssl create, it should be ansible host where you run play book
+192.168.61.74
+[node]
+192.168.61.71
+192.168.61.72
+192.168.61.73

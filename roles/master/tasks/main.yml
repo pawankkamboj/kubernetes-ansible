@@ -12,50 +12,43 @@
   register: masterpackage
 
 - name: create kubernetes config directory
-  when: masterpackage|succeeded
   file: path={{ manifest_config_dir }} state=directory
   register: manifest
 
 - name: copy api config file
-  when: manifest|succeeded
   template: src="kube-apiserver.json.j2" dest={{ manifest_config_dir }}/kube-apiserver.json
   register: api
 
 - name: copy controller config file
-  when: api|succeeded
   template: src="kube-controller-manager.json.j2" dest={{ manifest_config_dir }}/kube-controller-manager.json
   register: controller
 
 - name: copy scheduler config file
-  when: controller|succeeded
   template: src="kube-scheduler.json.j2" dest={{ manifest_config_dir }}/kube-scheduler.json
   register: scheduler
 
 - name: copy kube config file
-  when: scheduler|succeeded
   template: src="kubeconfig.j2" dest={{ kube_config_dir }}/kubeconfig
   register: config
 
 - name: copy openssl certificate from ansible host
-  when: config|succeeded
   copy: src={{ master_cert_dir }} dest={{ kube_config_dir }}
   register: openssl_cert
 
 - name: copy kubelet-config file
-  when: openssl_cert|succeeded
   template: src="kubelet.j2" dest={{ kube_config_dir }}/kubelet
   register: kubelet_conf
 
 - name: copy kubelet-service file
-  when: kubelet_conf|succeeded
   copy: src=kubelet.service dest=/etc/systemd/system/kubelet.service owner=root group=root mode=0755
   register: kubelet_service
 
 - name: start and enable kubelet
-  when: kubelet_service|succeeded
   service: name=kubelet enabled=no state=started
   register: kubelet_start
 
 - name: reload kubelet
-  when: openssl_cert|changed
+  when: openssl_cert|changed or kubelet_service|changed or kubelet_conf|changed
   service: name=kubelet state=restarted
+
+

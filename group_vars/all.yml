@@ -1,4 +1,4 @@
-#- please change IP address and cluster name, dns name according to your need.
+#- setup variable for cluster installation
 #- kubernetes dir
 kube_config_dir: /etc/kubernetes
 manifest_config_dir: /etc/kubernetes/manifests
@@ -13,9 +13,9 @@ controller_image: gcr.io/google_containers/kube-controller-manager-amd64:v1.4.0
 scheduler_image: gcr.io/google_containers/kube-scheduler-amd64:v1.4.0
 kube_proxy_image: gcr.io/google_containers/kube-proxy-amd64:v1.4.0
 
-#- cluster servive ip range
-service_ip_range: 100.64.0.0/12   # setup according to your env
-kubernetes_service_ip: 100.64.0.1 
+#- cluster service ip range
+service_ip_range: 100.64.0.0/12
+kubernetes_service_ip: 100.64.0.1
 #- all certifactes for cluster  
 account_key: /etc/kubernetes/pki/apiserver-key.pem
 ca_cert: /etc/kubernetes/pki/ca.pem
@@ -28,14 +28,15 @@ node_cert: /etc/kubernetes/pki/node.pem
 node_key: /etc/kubernetes/pki/node-key.pem
 
 #- api secure port and api loadbalancer IP
-api_secure_port: 5443 
-api_lb_ip: https://10.1.1.10 # it should be network load balancer IP or Host where Haproxy run
+api_secure_port: 5443
+api_lb_ip: https://192.168.61.74 # it should be haproxy host IP or network load balancer IP  # if using onle one api server then setup IP of it
 
 #- kubeconfig file 
 kubeconfig: /etc/kubernetes/kubeconfig
 
 # all master fqdn name - it require to create ssl certificate
-masters_fqdn: ['master1.test.com', 'master2.test.com', 'master3.test.com']
+# set it to only available api server
+masters_fqdn: ['devmaster.test.com', 'devnode1.test.com', 'devnode2.test.com']
 
 #- cluster dns name and IP
 cluster_name: cluster.local
@@ -53,7 +54,7 @@ dns_replicas: 1
 weave_net: false # set true only if cluster is fully operation and running
 #- if true then set following
 weaveui_port: 90
-weaveui_ip: 10.1.1.20 # it should be one of cluster node IP
+weaveui_ip: 192.168.61.71 # it should be one of cluster node IP
 
 # A list of insecure registrys you might need to define
 insecure_registrys:
@@ -63,15 +64,15 @@ cluster_monitoring: false # set true only if cluster is fully operation and runn
 #- if true then set following
 heapster_ip: 100.64.0.11 # it should be from cluster service_ip_range
 heapster_port: 80
-grafana_ip: 10.1.1.20 # it should be one of cluster node IP
+grafana_ip: 192.168.61.71 # it should be one of cluster node IP
 grafana_port: 100
-influx_ip: 10.1.1.20 # it should be one of cluster node IP
+influx_ip: 192.168.61.71 # it should be one of cluster node IP
 influx_port: 8086
 
 # Turn to false to disable the kube-dash addon for this cluster
 kube_dash: false  # set true only if cluster is fully operation and running
 #- if true then set following
-kube_dash_ip: 10.1.1.20 # it should be one of cluster node IP
+kube_dash_ip: 192.168.61.71 # it should be one of cluster node IP
 kube_dash_port: 80
 
 #- setup haproxy for loadbalancing

@@ -4,26 +4,21 @@
   register: addon_dir
 
 - name: copy kube-proxy config file
-  when: addon_dir|success
   template: src=kube-proxy.yaml.j2 dest={{ kube_addon_dir }}/kube-proxy.yaml
 
 - name: copy kube-dns config file
-  when: addon_dir|success
   template: src=kube-dns.yaml.j2 dest={{ kube_addon_dir }}/kube-dns.yaml
 
 - name: copy weavnet and weavescope config file
-  when: addon_dir|success
   template: src={{ item.src }} dest={{ kube_addon_dir }}/{{ item.dest }}
   with_items:
     - { src: "weavenet.yaml.j2", dest: "weavenet.yaml" }
     - { src: "weavescopeui.yaml.j2", dest: "weavescopeui.yaml" }
 
 - name: copy kube-monitoring config file
-  when: addon_dir|success
   template: src=kube-monitoring.yaml.j2 dest={{ kube_addon_dir }}/kube-monitoring.yaml
 
 - name: copy kube-dash config file
-  when: addon_dir|success
   template: src=dashboard.yaml.j2  dest={{ kube_addon_dir }}/dashboard.yaml
 
 - name: check kube-proxy

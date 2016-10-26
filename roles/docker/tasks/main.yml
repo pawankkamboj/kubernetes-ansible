@@ -1,7 +1,7 @@
 ---
 - name: Install Docker
-  action: "{{ ansible_pkg_mgr }}"
-  args:
+  when: ansible_os_family == "RedHat"
+  yum:
     name: docker
     state: latest
 
@@ -11,5 +11,3 @@
 
 - name: Enable Docker
   service: name=docker enabled=no state=started
-#  notify:
-#    - start docker

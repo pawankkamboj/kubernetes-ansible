@@ -1,23 +1,22 @@
 ---
 - name: Install etcd
-  action: "{{ ansible_pkg_mgr }}"
-  args:
-        name: etcd
-        state: latest
-  notify:
-    - restart etcd
+  when: ansible_os_family == "RedHat"
+  yum:
+    name: etcd
+    state: latest
 
 - name: Create etcd config directory
   file: path={{ etcd_conf_dir }} state=directory
 
 - name: Write etcd config file
   template: src=etcd.conf.j2 dest=/etc/etcd/etcd.conf
-  notify:
-    - restart etcd
+  register: etc_config
 
-- name: Enable etcd
-  service: name=etcd enabled=yes
+- name: Enable and start etcd
+  when: etc_config|succeeded
+  service: name=etcd enabled=yes state=started
 
-- name: Start etcd
-  service: name=etcd state=started
+- name: Retart etcd
+  service: name=etcd state=restarted
+  when: etc_config|changed
   register: etcd_started
