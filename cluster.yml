@@ -22,7 +22,7 @@
     - docker
 
 # install haproxy
-- hosts: haproxy
+- hosts: masters
   roles:
     - haproxy
   tags:
