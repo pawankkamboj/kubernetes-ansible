@@ -15,6 +15,13 @@
   file: path={{ manifest_config_dir }} state=directory
   register: manifest
 
+- name: create weave dir
+  file: path={{ weavedir }} state=directory
+
+- name: copy weave file
+  copy: src=10-weave.conf  dest=/etc/cni/net.d/10-weave.conf
+
+
 - name: copy api config file
   template: src="kube-apiserver.json.j2" dest={{ manifest_config_dir }}/kube-apiserver.json
   register: api

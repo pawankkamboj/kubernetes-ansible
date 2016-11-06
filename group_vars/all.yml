@@ -6,6 +6,7 @@ cert_dir: /etc/kubernetes/pki
 master_cert_dir: /opt/kubernetes/pki
 kube_addon_dir: /etc/kubernetes/addon
 #kube_script_dir: /etc/kubernetes/bin
+weavedir: /etc/cni/net.d
 
 #- image and other variable
 api_image: gcr.io/google_containers/kube-apiserver-amd64:v1.4.0

@@ -94,7 +94,7 @@ spec:
           command:
             - /heapster
             - --source=kubernetes.summary_api:''
-            - --sink=influxdb:http://{{ influx_ip }}/{{ influx_port }}
+            - --sink=influxdb:http://{{ influx_ip }}:{{ influx_port }}
 
 ---
 apiVersion: extensions/v1beta1

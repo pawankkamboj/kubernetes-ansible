@@ -18,6 +18,12 @@
   file: path={{ kube_config_dir }} state=directory
   register: config_dir
 
+- name: create weave dir
+  file: path={{ weavedir }} state=directory
+
+- name: copy weave file
+  copy: src=10-weave.conf  dest=/etc/cni/net.d/10-weave.conf
+
 - name: copy kubelet config file
   template: src="kubelet.j2" dest={{ kube_config_dir }}/kubelet
   register: kubeletconfig
