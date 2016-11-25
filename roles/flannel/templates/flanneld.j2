@@ -1,0 +1,17 @@
+# Flanneld configuration options  
+
+# etcd url location.  Point this to the server where etcd runs
+FLANNEL_ETCD="{% for node in groups['etcd'] %}{{ etcd_peer_url_scheme }}://{{ node }}:2379{% if not loop.last %},{% endif %}{% endfor %}"
+
+# etcd config key.  This is the configuration key that flannel queries
+# For address range assignment
+FLANNEL_ETCD_KEY="{{ flannel_key }}"
+
+# etcd cert files
+{% if etcd_peer_url_scheme == 'https' -%}
+FLANNELD_ETCD_CAFILE={{ etcd_ca_file }}
+FLANNELD_ETCD_CERTFILE={{ etcd_cert_file }}
+FLANNELD_ETCD_KEYFILE={{ etcd_key_file }}
+{% endif -%}
+
+ 

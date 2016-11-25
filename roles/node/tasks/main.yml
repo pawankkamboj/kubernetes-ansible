@@ -14,22 +14,32 @@
   copy: src=kubelet.service dest=/etc/systemd/system/kubelet.service owner=root group=root mode=0755
   register: kubelet
 
+- name: create kubernetes manifest config directory
+  file: path={{ manifest_config_dir }} state=directory
+  register: manifest
+
+- name: create weave dir
+  when: weave_net
+  file: path={{ weavedir }} state=directory
+
+- name: copy weave file
+  when: weave_net
+  copy: src=10-weave.conf  dest=/etc/cni/net.d/10-weave.conf 
+
 - name: create kubernetes config directory
   file: path={{ kube_config_dir }} state=directory
   register: config_dir
 
-- name: create weave dir
-  file: path={{ weavedir }} state=directory
-
-- name: copy weave file
-  copy: src=10-weave.conf  dest=/etc/cni/net.d/10-weave.conf
+- name: copy kubeadmin config file
+  template: src="kubeadminconfig.j2" dest={{ kube_config_dir }}/kubeadminconfig
+  register: config
 
 - name: copy kubelet config file
   template: src="kubelet.j2" dest={{ kube_config_dir }}/kubelet
   register: kubeletconfig
 
 - name: copy kube config file
-  template: src="kubeconfig.j2" dest={{ kube_config_dir }}/kubeconfig
+  template: src="kubeletconfig.j2" dest={{ kube_config_dir }}/kubeletconfig
   register: kube_config
 
 - name: create ssl cert dir
@@ -41,6 +51,8 @@
   with_items:
     - "ca-key.pem"
     - "ca.pem"
+    - "admin.pem"
+    - "admin-key.pem"
   register: ca_cert
 
 - name: copy openssl
@@ -49,7 +61,7 @@
   register: openssl_config
 
 - name: create certificate for node
-  when: openssl_config|changed
+#  when: openssl_config|changed
   register: create_ssl_cert
   command: "{{ item }}"
   with_items:
