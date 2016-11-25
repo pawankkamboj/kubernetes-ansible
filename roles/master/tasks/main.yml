@@ -16,11 +16,12 @@
   register: manifest
 
 - name: create weave dir
+  when: weave_net
   file: path={{ weavedir }} state=directory
 
 - name: copy weave file
+  when: weave_net
   copy: src=10-weave.conf  dest=/etc/cni/net.d/10-weave.conf
-
 
 - name: copy api config file
   template: src="kube-apiserver.json.j2" dest={{ manifest_config_dir }}/kube-apiserver.json
@@ -35,7 +36,7 @@
   register: scheduler
 
 - name: copy kube config file
-  template: src="kubeconfig.j2" dest={{ kube_config_dir }}/kubeconfig
+  template: src="kubeadminconfig.j2" dest={{ kube_config_dir }}/kubeadminconfig
   register: config
 
 - name: copy openssl certificate from ansible host
@@ -57,5 +58,4 @@
 - name: reload kubelet
   when: openssl_cert|changed or kubelet_service|changed or kubelet_conf|changed
   service: name=kubelet state=restarted
-
 
