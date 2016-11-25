@@ -5,8 +5,8 @@ manifest_config_dir: /etc/kubernetes/manifests
 cert_dir: /etc/kubernetes/pki
 master_cert_dir: /opt/kubernetes/pki
 kube_addon_dir: /etc/kubernetes/addon
-#kube_script_dir: /etc/kubernetes/bin
 weavedir: /etc/cni/net.d
+flannel_dir: /etc/sysconfig
 
 #- image and other variable
 api_image: gcr.io/google_containers/kube-apiserver-amd64:v1.4.5
@@ -31,9 +31,11 @@ node_key: /etc/kubernetes/pki/node-key.pem
 #- api secure port and api loadbalancer IP
 api_secure_port: 5443
 api_lb_ip: https://192.168.61.74 # it should be haproxy host IP or network load balancer IP  # if using onle one api server then setup IP of it
+lb_ip: 192.168.61.74
 
 #- kubeconfig file 
 kubeconfig: /etc/kubernetes/kubeconfig
+kubeletconfig: /etc/kubernetes/kubeletconfig
 
 # all master fqdn name - it require to create ssl certificate
 # set it to only available api server
@@ -56,6 +58,11 @@ weave_net: false # set true only if cluster is fully operation and running
 #- if true then set following
 weaveui_port: 90
 weaveui_ip: 192.168.61.71 # it should be one of cluster node IP
+
+#flannel network # only one network plugin should be enable either weave or flannel
+flannel: true
+flannel_network: "10.10.0.0/16"
+flannel_key: "/atomic.io/network"
 
 # A list of insecure registrys you might need to define
 insecure_registrys:
@@ -85,4 +92,14 @@ admin_password: admin123
 
 #- ssl cert handler
 sslcert_create: false # set true to create certificate, it should be true during ansible first run
+
+#- etcd config
+domain_name: test.com #- use to create wildcard ssl certificate for etcd
+etcd_peer_url_scheme: http #- for http  or https
+etcd_ca_file: "/etc/kubernetes/pki/ca.pem"
+etcd_cert_file: "/etc/kubernetes/pki/etcd.pem"
+etcd_key_file: "/etc/kubernetes/pki/etcd-key.pem"
+etcd_peer_ca_file: "/etc/kubernetes/pki/ca.pem"
+etcd_peer_cert_file: "/etc/kubernetes/pki/etcd.pem"
+etcd_peer_key_file: "/etc/kubernetes/pki/etcd-key.pem"
 

@@ -7,6 +7,13 @@
   tags:
     - yum-repo
 
+# install ssl cert
+- hosts: sslhost
+  roles:
+     -  sslcert
+  tags:
+     -  sslcert
+
 # Install etcd
 - hosts: etcd
   roles:
@@ -28,13 +35,6 @@
   tags:
     - haproxy
 
-# install ssl cert
-- hosts: sslhost
-  roles:
-     -  sslcert
-  tags:
-     -  sslcert
-
 # install kubernetes master services
 - hosts: masters
   roles:
@@ -48,6 +48,11 @@
     - node
   tags:
     - node
+
+# Install flannel
+- hosts: all
+  roles:
+    - flannel
 
 # launch addons
 # run only cluster is fully operation
