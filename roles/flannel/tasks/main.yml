@@ -15,6 +15,9 @@
 #  when: change_flannel|changed
 #  register: etcd_add
 
+- name: move flannel env for docker 
+  command: mv /usr/lib/systemd/system/docker.servive.d /usr/lib/systemd/system/docker-latest.servive.d
+
 - name: copy etcd certificate from ansible host
   when: etcd_peer_url_scheme == 'https'
   copy: src={{ master_cert_dir }} dest={{ kube_config_dir }}
