@@ -94,7 +94,7 @@ admin_password: admin123
 sslcert_create: false # set true to create certificate, it should be true during ansible first run
 
 #- etcd config
-domain_name: test.com #- use to create wildcard ssl certificate for etcd
+domain_name: test.com #- use to create wildcard ssl certificate for api and etcd
 etcd_peer_url_scheme: http #- for http  or https
 etcd_ca_file: "/etc/kubernetes/pki/ca.pem"
 etcd_cert_file: "/etc/kubernetes/pki/etcd.pem"
