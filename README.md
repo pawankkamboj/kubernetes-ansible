@@ -1,5 +1,6 @@
 # HA-kubernetes-ansible
-Ansible module to create a Highly Available kubernetes cluster using latest release 1.4.x on Bare metal system(CentOS-7.x)
+Ansible module to create a Highly Available kubernetes cluster using latest release 1.4.x on Bare metal system(CentOS-7.x).
+Ansible version "2.1.2" is require to use this module.
 
 There are 8 roles define in this ansible module.
 - addon - to create addon service, kube-proxy, kube-dns, kube-dashboard, weavnet, weavescope-ui and cluster-monitoring using heapster and grafana/infuxdb
