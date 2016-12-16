@@ -63,6 +63,7 @@ weaveui_ip: 192.168.61.71 # it should be one of cluster node IP
 flannel: true
 flannel_network: "10.10.0.0/16"
 flannel_key: "/atomic.io/network"
+flannel_subnet_len: 24
 
 # A list of insecure registrys you might need to define
 insecure_registrys:
