@@ -8,8 +8,8 @@ basicConstraints = CA:FALSE
 keyUsage = nonRepudiation, digitalSignature, keyEncipherment
 subjectAltName = @alt_names
 [alt_names]
-DNS.1 = yatra.com
-DNS.2 = *.yatra.com
+DNS.1 = {{ domain_name }}
+DNS.2 = *.{{ domain_name }}
 {% set pk = groups['masters'] | union(groups['node']) %}
 {% for host in pk %}
 {% set count = loop.index  %}
