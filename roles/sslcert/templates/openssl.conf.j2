@@ -11,8 +11,8 @@ DNS.1 = kubernetes
 DNS.2 = kubernetes.default
 DNS.3 = kubernetes.default.svc
 DNS.4 = kubernetes.default.svc.{{ cluster_name }}
-DNS.5 = yatra.com
-DNS.6 = *.yatra.com
+DNS.5 = {{ domain_name }}
+DNS.6 = *.{{ domain_name }}
 IP.1 = {{ kubernetes_service_ip }}
 {% for host in groups['masters'] %}
 {% set count1 = loop.index + 1 %}
