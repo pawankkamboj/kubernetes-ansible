@@ -36,6 +36,7 @@ lb_ip: 192.168.61.74
 #- kubeconfig file 
 kubeconfig: /etc/kubernetes/kubeconfig
 kubeletconfig: /etc/kubernetes/kubeletconfig
+kubeadminconfig: /etc/kubernetes/kubeadminconfig
 
 # all master fqdn name - it require to create ssl certificate
 # set it to only available api server
