@@ -51,6 +51,9 @@
   copy: src=kubelet.service dest=/etc/systemd/system/kubelet.service owner=root group=root mode=0755
   register: kubelet_service
 
+- name: create kubelet directory
+  file: path=/var/lib/kubelet state=directory
+  
 - name: start and enable kubelet
   service: name=kubelet enabled=no state=started
   register: kubelet_start
