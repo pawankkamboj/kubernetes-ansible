@@ -69,6 +69,9 @@
     - "openssl req -new -key {{ cert_dir }}/node-key.pem -out {{ cert_dir }}/node.csr -subj '/CN=kube-node' -config {{ cert_dir }}/openssl.conf"
     - "openssl x509 -req -in {{ cert_dir }}/node.csr -CA {{ cert_dir }}/ca.pem -CAkey {{ cert_dir }}/ca-key.pem -CAcreateserial -out {{ cert_dir }}/node.pem -days 1000 -extensions v3_req -extfile {{ cert_dir }}/openssl.conf"
 
+- name: create kubelet directory
+  file: path=/var/lib/kubelet state=directory
+  
 - name: start and enable kubelet on node
   service: name=kubelet enabled=no state=started
   register: kubelet_start_node
