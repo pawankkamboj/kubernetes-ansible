@@ -46,7 +46,7 @@ masters_fqdn: ['devmaster.test.com', 'devnode1.test.com', 'devnode2.test.com']
 cluster_name: cluster.local
 
 # kube-proxy addon
-kube_proxy: false # set true only if cluster is fully operation and running
+kube_proxy: true # set true only if cluster is fully operation and running
 
 #- kube-dns add-on
 kube_dns: false # set true only if cluster is fully operation and running
@@ -93,7 +93,7 @@ admin_user: admin
 admin_password: admin123
 
 #- ssl cert handler
-sslcert_create: false # set true to create certificate, it should be true during ansible first run
+sslcert_create: true # set true to create certificate, it should be true during ansible first run
 
 #- etcd config
 domain_name: test.com #- use to create wildcard ssl certificate for api and etcd
