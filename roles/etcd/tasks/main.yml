@@ -8,6 +8,9 @@
 - name: Create etcd config directory
   file: path={{ etcd_conf_dir }} state=directory
 
+- name: Create etcd cert directory
+  file: path={{ kube_config_dir }} state=directory
+
 - name: Write etcd config file
   template: src=etcd.conf.j2 dest=/etc/etcd/etcd.conf
   register: etc_config
