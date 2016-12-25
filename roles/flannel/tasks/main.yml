@@ -2,7 +2,7 @@
 - name: Install flannel
   when: flannel
   yum:
-    name: flannel-{{flannel_version }}
+    name: flannel
     state: latest
     update_cache: yes
 
