@@ -11,7 +11,7 @@ There are 8 roles define in this ansible module.
 - node - setup kubernetes node service - kubelet
 - sslcert - create all ssl certificates require to run secure K8S cluster
 - yum-repo - create epel and kubernetes-1.4 package repo
-- flannel - add flannel as network plugin
+- flannel - add flannel as network plugin, flannel version should be 0.5.5.
 
 Following the below steps to create Kubernetes HA setup on Centos-7.
 - Prerequisite
