@@ -21,6 +21,11 @@
   tags:
     - etcd
 
+# Install flannel
+- hosts: all
+  roles:
+   - flannel
+
 # Install docker
 - hosts: all
   roles:
@@ -49,19 +54,14 @@
   tags:
     - node
 
-# Install flannel
-- hosts: all
-  roles:
-    - flannel
-
 # launch addons
 # run only cluster is fully operation
-- hosts: masters
-  roles:
-    -  addon
-  tags:
-    - addon
-    - dns
-    - proxy
-    - weave
-    - dashboard
+#- hosts: masters
+#  roles:
+#    -  addon
+#  tags:
+#    - addon
+#    - dns
+#    - proxy
+#    - weave
+#    - dashboard
