@@ -92,9 +92,6 @@ haproxy_monitor_port: 9090
 admin_user: admin
 admin_password: admin123
 
-#- ssl cert handler
-sslcert_create: true # set true to create certificate, it should be true during ansible first run
-
 #- etcd config
 domain_name: test.com #- use to create wildcard ssl certificate for api and etcd
 etcd_peer_url_scheme: http #- for http  or https
