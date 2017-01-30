@@ -1,0 +1,9 @@
+---
+# This playbook deploys a squid proxy.
+
+# install suid proxy
+- hosts: yum-proxy
+  roles:
+    - yum-proxy
+  tags:
+    - yum-proxy
