@@ -49,7 +49,7 @@ cluster_name: cluster.local
 kube_proxy: true # set true only if cluster is fully operation and running
 
 #- kube-dns add-on
-kube_dns: false # set true only if cluster is fully operation and running
+kube_dns: true # set true only if cluster is fully operation and running
 #- if true then set following
 dns_ip: 100.64.0.10 # it should be from cluster service_ip_range
 dns_replicas: 1
@@ -70,7 +70,7 @@ flannel_subnet_len: 24
 insecure_registrys:
 
 # Turn to false to disable cluster monitoring with heapster and influxdb
-cluster_monitoring: false # set true only if cluster is fully operation and running
+cluster_monitoring: true # set true only if cluster is fully operation and running
 #- if true then set following
 heapster_ip: 100.64.0.11 # it should be from cluster service_ip_range
 heapster_port: 80
@@ -80,7 +80,7 @@ influx_ip: 192.168.61.71 # it should be one of cluster node IP
 influx_port: 8086
 
 # Turn to false to disable the kube-dash addon for this cluster
-kube_dash: false  # set true only if cluster is fully operation and running
+kube_dash: true  # set true only if cluster is fully operation and running
 #- if true then set following
 kube_dash_ip: 192.168.61.71 # it should be one of cluster node IP
 kube_dash_port: 80

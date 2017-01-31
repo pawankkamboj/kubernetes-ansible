@@ -23,7 +23,7 @@ all.yml. Please read this file carefully and modify according to your need.
 
 Run cluster.yml playbook to create Kubernetes HA cluster.
 
-Note - Addon roles should be run after cluster is fully operational.
+Note - Addon roles should be run after cluster is fully operational. Addons are in addons.yml playbook.
 
 
 
