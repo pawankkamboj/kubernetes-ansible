@@ -11,8 +11,11 @@
   template: src="openssl-etcd.conf.j2" dest={{ master_cert_dir }}/openssl-etcd.conf
   register: ssl_config
 
+- stat: path={{ master_cert_dir }}/ca-key.pem
+  register: ca_key_stat
+
 - name: create kubenetes certificates
-  when: sslcert_create
+  when: not ca_key_stat.stat.exists
   register: create_cert
   command: "{{ item }}"
   with_items:

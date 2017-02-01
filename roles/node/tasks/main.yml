@@ -46,17 +46,8 @@
   file: path={{ cert_dir }} state=directory
   register: ssl_dir
 
-- name: copy CA certificate from ansible host
-  template: src={{ master_cert_dir }}/{{ item }} dest={{ cert_dir }}/{{ item }}
-  with_items:
-    - "ca-key.pem"
-    - "ca.pem"
-    - "admin.pem"
-    - "admin-key.pem"
-  register: ca_cert
-
 - name: copy openssl
-  when: ca_cert|changed
+  when: openssl_cert|changed
   template: src="openssl.conf.j2" dest={{ kube_config_dir }}/pki/openssl.conf
   register: openssl_config
 

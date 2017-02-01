@@ -42,6 +42,8 @@
 
 - name: move flannel env for docker 
   command: mv /usr/lib/systemd/system/docker.service.d /usr/lib/systemd/system/docker-latest.service.d
+  args:
+    creates: /usr/lib/systemd/system/docker-latest.service.d
 
 - name: copy etcd certificate from ansible host
   when: etcd_peer_url_scheme == 'https'

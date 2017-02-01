@@ -53,15 +53,3 @@
     - node
   tags:
     - node
-
-# launch addons
-# run only cluster is fully operation
-#- hosts: masters
-#  roles:
-#    -  addon
-#  tags:
-#    - addon
-#    - dns
-#    - proxy
-#    - weave
-#    - dashboard

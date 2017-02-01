@@ -39,10 +39,6 @@
   template: src="kubeadminconfig.j2" dest={{ kube_config_dir }}/kubeadminconfig
   register: config
 
-- name: copy openssl certificate from ansible host
-  copy: src={{ master_cert_dir }} dest={{ kube_config_dir }}
-  register: openssl_cert
-
 - name: copy kubelet-config file
   template: src="kubelet.j2" dest={{ kube_config_dir }}/kubelet
   register: kubelet_conf
