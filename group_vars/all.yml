@@ -30,8 +30,8 @@ node_key: /etc/kubernetes/pki/node-key.pem
 
 #- api secure port and api loadbalancer IP
 api_secure_port: 5443
-api_lb_ip: https://192.168.61.74 # it should be haproxy host IP or network load balancer IP  # if using onle one api server then setup IP of it
-lb_ip: 192.168.61.74
+api_lb_ip: https://192.168.50.11 # it should be haproxy host IP or network load balancer IP  # if using onle one api server then setup IP of it
+lb_ip: 192.168.50.11
 
 #- kubeconfig file 
 kubeconfig: /etc/kubernetes/kubeconfig
@@ -40,7 +40,7 @@ kubeadminconfig: /etc/kubernetes/kubeadminconfig
 
 # all master fqdn name - it require to create ssl certificate
 # set it to only available api server
-masters_fqdn: ['devmaster.test.com', 'devnode1.test.com', 'devnode2.test.com']
+masters_fqdn: ['master1', 'master2']
 
 #- cluster dns name and IP
 cluster_name: cluster.local
@@ -58,7 +58,7 @@ dns_replicas: 1
 weave_net: false # set true only if cluster is fully operation and running
 #- if true then set following
 weaveui_port: 90
-weaveui_ip: 192.168.61.71 # it should be one of cluster node IP
+weaveui_ip: 192.168.50.11 # it should be one of cluster node IP
 
 #flannel network # only one network plugin should be enable either weave or flannel
 flannel: true
@@ -74,15 +74,15 @@ cluster_monitoring: true # set true only if cluster is fully operation and runni
 #- if true then set following
 heapster_ip: 100.64.0.11 # it should be from cluster service_ip_range
 heapster_port: 80
-grafana_ip: 192.168.61.71 # it should be one of cluster node IP
+grafana_ip: 192.168.50.11 # it should be one of cluster node IP
 grafana_port: 100
-influx_ip: 192.168.61.71 # it should be one of cluster node IP
+influx_ip: 192.168.50.11 # it should be one of cluster node IP
 influx_port: 8086
 
 # Turn to false to disable the kube-dash addon for this cluster
 kube_dash: true  # set true only if cluster is fully operation and running
 #- if true then set following
-kube_dash_ip: 192.168.61.71 # it should be one of cluster node IP
+kube_dash_ip: 192.168.50.11 # it should be one of cluster node IP
 kube_dash_port: 80
 
 #- setup haproxy for loadbalancing
@@ -102,3 +102,5 @@ etcd_peer_ca_file: "/etc/kubernetes/pki/ca.pem"
 etcd_peer_cert_file: "/etc/kubernetes/pki/etcd.pem"
 etcd_peer_key_file: "/etc/kubernetes/pki/etcd-key.pem"
 
+#- proxy configuration of yum repositories
+yum_proxy: "http://192.168.50.99:3128"

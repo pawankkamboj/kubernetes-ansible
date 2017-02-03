@@ -1,0 +1,14 @@
+---
+- name: Install Squid proxy
+  when: ansible_os_family == "RedHat" and yum_proxy != ""
+  yum: name=squid state=latest
+
+- name: Set cache dir
+  when: ansible_os_family == "RedHat" and yum_proxy != ""
+  lineinfile:
+    dest: "/etc/squid/squid.conf"
+    line: "cache_dir ufs /var/spool/squid 100 16 256"
+
+- name: Enable Squid
+  when: ansible_os_family == "RedHat" and yum_proxy != ""
+  service: name=squid enabled=no state=started

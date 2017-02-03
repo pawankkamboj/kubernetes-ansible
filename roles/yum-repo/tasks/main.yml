@@ -15,3 +15,27 @@
     enabled: yes
     gpgcheck: no
   register: kuberepo
+
+- name: Use yum proxy
+  when: ansible_os_family == "RedHat" and yum_proxy != ""
+  lineinfile:
+    dest: "/etc/yum.conf"
+    line: "proxy: {{ yum_proxy }}"
+
+- shell: "ls -1 /etc/yum.repos.d"
+  when: ansible_os_family == "RedHat" and yum_proxy != ""
+  register: yum_repos
+
+- name: Use baseurl
+  when: ansible_os_family == "RedHat" and yum_proxy != ""
+  command: "sed -i 's/#baseurl/baseurl/g' /etc/yum.repos.d/{{ item }}"
+  with_items: "{{ yum_repos.stdout_lines }}"
+
+- name: Disable mirrors
+  when: ansible_os_family == "RedHat" and yum_proxy != ""
+  command: "sed -i 's/mirrorlist/#mirrorlist/g' /etc/yum.repos.d/{{ item }}"
+  with_items: "{{ yum_repos.stdout_lines }}"
+
+- name: Remove mirror fastest mirrors
+  when: ansible_os_family == "RedHat" and yum_proxy != ""
+  file: path=/etc/yum/pluginconf.d/fastestmirror.conf state=absent
