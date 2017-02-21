@@ -18,8 +18,8 @@ cd HA-kubernetes-ansible
 cat ~/.ssh/id_rsa.pub > ssh-key.pub
 vagrant up
 for a in 11 12 21 22 99; do ssh 192.168.50.${a} exit; done
-ansible-playbook -i yum-proxy -s -u vagrant yum-proxy.yml
-ansible-playbook -i vagrant -s -u vagrant cluster.yml
+ansible-playbook -i yum-proxy -b -u vagrant yum-proxy.yml
+ansible-playbook -i vagrant -b -u vagrant cluster.yml
 ```
 
 After magic happened we should test Kubernetes cluster installation by executing `vagrant ssh master1 -c 'watch -n1 kubectl get nodes'` command.
@@ -34,7 +34,7 @@ node2     Ready     11m
 
 We are almost there, only addons left.
 ```
-ansible-playbook -i vagrant -s -u vagrant addon.yml
+ansible-playbook -i vagrant -b -u vagrant addon.yml
 ```
 Test result of execution with `vagrant ssh master1 -c 'watch -n1 kubectl get pods -n kube-system'` command.
 ```
