@@ -1,8 +1,8 @@
 [Unit]
 Description=Kubernetes Kubelet Server
 Documentation=https://github.com/GoogleCloudPlatform/kubernetes
-After=docker-latest.service
-Requires=docker-latest.service
+After=docker.service
+Requires=docker.service
 
 [Service]
 WorkingDirectory=/var/lib/kubelet
