@@ -99,8 +99,8 @@ kube_dash_port: 80
 haproxy: true  # set false when already physical loadbalancer available
 haproxy_dir: /etc/haproxy
 haproxy_monitor_port: 9090
-admin_user: admin
-admin_password: admin123
+haadmin_user: admin
+haadmin_password: admin123
 
 #- etcd config
 domain_name: test.com #- use to create wildcard ssl certificate for api and etcd
