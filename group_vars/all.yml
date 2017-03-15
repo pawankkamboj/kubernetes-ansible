@@ -9,10 +9,10 @@ weavedir: /etc/cni/net.d
 flannel_dir: /etc/sysconfig
 
 #- image and other variable
-api_image: gcr.io/google_containers/kube-apiserver-amd64:v1.5.3
-controller_image: gcr.io/google_containers/kube-controller-manager-amd64:v1.5.3
-scheduler_image: gcr.io/google_containers/kube-scheduler-amd64:v1.5.3
-kube_proxy_image: gcr.io/google_containers/kube-proxy-amd64:v1.5.3
+api_image: gcr.io/google_containers/kube-apiserver-amd64:v1.5.4
+controller_image: gcr.io/google_containers/kube-controller-manager-amd64:v1.5.4
+scheduler_image: gcr.io/google_containers/kube-scheduler-amd64:v1.5.4
+kube_proxy_image: gcr.io/google_containers/kube-proxy-amd64:v1.5.4
 
 #- cluster service ip range
 service_ip_range: 100.64.0.0/12
@@ -34,7 +34,6 @@ api_lb_ip: https://192.168.50.11 # it should be haproxy host IP or network load 
 lb_ip: 192.168.50.11
 
 #- kubeconfig file 
-kubeconfig: /etc/kubernetes/kubeconfig
 kubeletconfig: /etc/kubernetes/kubeletconfig
 kubeadminconfig: /etc/kubernetes/kubeadminconfig
 
@@ -43,7 +42,18 @@ kubeadminconfig: /etc/kubernetes/kubeadminconfig
 masters_fqdn: ['master1', 'master2']
 
 #- cluster dns name and IP
-cluster_name: cluster.local
+cluster_name: kubernetes
+
+#- api authorization ABAC
+auth_mode: ABAC
+auth_file: /etc/kubernetes/auth.csv
+policy_file: /etc/kubernetes/policy.json
+
+#- admin/readonly user password
+admin_user: admin
+admin_pass: AdminPass
+readonly_user: readonly
+readonly_pass: readonly
 
 # kube-proxy addon
 kube_proxy: true # set true only if cluster is fully operation and running
@@ -70,7 +80,7 @@ flannel_subnet_len: 24
 insecure_registrys:
 
 # Turn to false to disable cluster monitoring with heapster and influxdb
-cluster_monitoring: true # set true only if cluster is fully operation and running
+cluster_monitoring: false # set true only if cluster is fully operation and running
 #- if true then set following
 heapster_ip: 100.64.0.11 # it should be from cluster service_ip_range
 heapster_port: 80
