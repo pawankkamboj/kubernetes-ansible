@@ -42,8 +42,8 @@
           "--allow-privileged",
 	  "--advertise-address={{ lb_ip }}",
   	  "--anonymous-auth=false",
-          "--basic-auth-file={{ auth_file }}",
           {% if auth_mode == 'ABAC' -%}
+	  "--basic-auth-file={{ auth_file }}",
           "--authorization-mode={{ auth_mode }}",
           "--authorization-policy-file={{ policy_file }}",
           {% endif -%}
