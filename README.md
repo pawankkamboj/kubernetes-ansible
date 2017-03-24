@@ -28,5 +28,9 @@ Note - Addon roles should be run after cluster is fully operational. Addons are 
 
 
 
+# kubernetes HA architecture
+Below is a sample Kubernetes cluster architecture after successfully building it using playbook, It is just a sample, so number of servers/node may vary according to your setup.
+
+![kubernetes HA architecture](./kubernetes sample architecture.png)
 
 
