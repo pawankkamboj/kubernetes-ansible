@@ -1,18 +1,34 @@
 apiVersion: v1
 clusters:
-- cluster:
+- name: cluster-ssl
+  cluster:
     certificate-authority: {{ ca_cert }}
     server: {{ api_lb_ip }}
-  name: kubernetes
+- name: cluster-sslskip
+  cluster:
+    server: {{ api_lb_ip }}
+    insecure-skip-tls-verify: true
 contexts:
 - context:
-    cluster: kubernetes
+    cluster: cluster-ssl
     user: kubelet-devmaster
-  name: kubelet-devmaster@kubernetes
-current-context: kubelet-devmaster@kubernetes
+  name: kubelet-devmaster@cluster-ssl
+- context:
+    cluster: cluster-sslskip
+    user: admin_auth
+  name: admin@cluster-sslskip
+{% if auth_mode == 'ABAC' -%}
+current-context: admin@cluster-sslskip
+{% else %}
+current-context: kubelet-devmaster@cluster-ssl
+{% endif -%}
 kind: Config
 users:
 - name: kubelet-devmaster
   user:
     client-certificate: {{ node_cert }}
     client-key: {{ node_key }}
+- name: admin_auth
+  user:
+   username: {{ admin_user }}
+   password: {{ admin_pass }}
