@@ -17,11 +17,7 @@ contexts:
     cluster: cluster-sslskip
     user: admin_auth
   name: admin@cluster-sslskip
-{% if auth_mode == 'ABAC' -%}
-current-context: admin@cluster-sslskip
-{% else %}
 current-context: admin@cluster-ssl
-{% endif -%}
 kind: Config
 users:
 - name: admin_ssl
