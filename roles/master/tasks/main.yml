@@ -39,6 +39,9 @@
   template: src="kubeadminconfig.j2" dest={{ kube_config_dir }}/kubeadminconfig
   register: config
 
+- name: copy kubeconfig file to use with command line tool kubectl 
+  template: src="kubeconfig.j2" dest={{ kube_config_dir }}/kubeconfig
+
 - name: copy kubelet-config file
   template: src="kubelet.j2" dest={{ kube_config_dir }}/kubelet
   register: kubelet_conf
