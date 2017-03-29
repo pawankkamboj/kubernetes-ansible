@@ -1,4 +1,6 @@
 {"apiVersion": "abac.authorization.kubernetes.io/v1beta1", "kind": "Policy", "spec": {"user":"admin", "nonResourcePath": "*", "namespace": "*", "resource": "*", "apiGroup": "*"}}
+{"apiVersion": "abac.authorization.kubernetes.io/v1beta1", "kind": "Policy", "spec": {"user":"kube-admin", "nonResourcePath": "*", "namespace": "*", "resource": "*", "apiGroup": "*"}}
+{"apiVersion": "abac.authorization.kubernetes.io/v1beta1", "kind": "Policy", "spec": {"user":"kube-node", "nonResourcePath": "*", "namespace": "*", "resource": "*", "apiGroup": "*"}}
 {"apiVersion": "abac.authorization.kubernetes.io/v1beta1", "kind": "Policy", "spec": {"user":"system:serviceaccount:kube-system:default","nonResourcePath": "*","namespace":"*","resource":"*","apiGroup":"*"}}
 {"apiVersion": "abac.authorization.kubernetes.io/v1beta1", "kind": "Policy", "spec": {"user":"system:serviceaccount:default:default","nonResourcePath": "*","namespace":"*","resource":"*","apiGroup":"*"}}
 {"apiVersion": "abac.authorization.kubernetes.io/v1beta1", "kind": "Policy", "spec": {"user":"*", "namespace": "*", "resource": "*", "apiGroup": "*", "nonResourcePath": "*", "readonly":true }}
