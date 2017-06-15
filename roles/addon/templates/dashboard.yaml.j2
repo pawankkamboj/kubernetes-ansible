@@ -1,23 +1,23 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: kubernetes-dashboard-v1.5.1
+  name: kubernetes-dashboard-v1.6.1
   namespace: kube-system
   labels:
     k8s-app: kubernetes-dashboard
-    version: v1.5.1
+    version: v1.6.1
     kubernetes.io/cluster-service: "true"
 spec:
   replicas: 1
   selector:
     matchLabels:
       k8s-app: kubernetes-dashboard
-      version: v1.5.1
+      version: v1.6.1
   template:
     metadata:
       labels:
         k8s-app: kubernetes-dashboard
-        version: v1.5.1
+        version: v1.6.1
         kubernetes.io/cluster-service: "true"
       annotations:
         scheduler.alpha.kubernetes.io/critical-pod: ''
@@ -25,7 +25,7 @@ spec:
     spec:
       containers:
       - name: kubernetes-dashboard
-        image: gcr.io/google_containers/kubernetes-dashboard-amd64:v1.5.1
+        image: gcr.io/google_containers/kubernetes-dashboard-amd64:v1.6.1
         resources:
           limits:
             cpu: 100m
