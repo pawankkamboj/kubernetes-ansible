@@ -60,29 +60,29 @@ spec:
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: heapster-v1.2.0
+  name: heapster-v1.4.0
   namespace: kube-system
   labels:
     k8s-app: heapster
     kubernetes.io/cluster-service: "true"
-    version: v1.2.0
+    version: v1.4.0
 spec:
   replicas: 1
   selector:
     matchLabels:
       k8s-app: heapster
-      version: v1.2.0
+      version: v1.4.0
   template:
     metadata:
       labels:
         k8s-app: heapster
-        version: v1.2.0
+        version: v1.4.0
       annotations:
         scheduler.alpha.kubernetes.io/critical-pod: ''
         scheduler.alpha.kubernetes.io/tolerations: '[{"key":"CriticalAddonsOnly", "operator":"Exists"}]'
     spec:
       containers:
-        - image: gcr.io/google_containers/heapster:v1.2.0
+        - image: gcr.io/google_containers/heapster:v1.4.0
           name: heapster
           livenessProbe:
             httpGet:
@@ -114,12 +114,12 @@ spec:
     spec:
       containers:
       - name: influxdb
-        image: kubernetes/heapster_influxdb:v0.5
+        image: gcr.io/google_containers/heapster-influxdb-amd64:v1.1.1
         volumeMounts:
         - mountPath: /data
           name: influxdb-storage
       - name: grafana
-        image: gcr.io/google_containers/heapster_grafana:v2.6.0-2
+        image: gcr.io/google_containers/heapster-grafana-amd64:v4.0.2
         env:
           - name: INFLUXDB_SERVICE_URL
             value: http://{{ influx_ip }}:{{ influx_port }}
