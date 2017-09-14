@@ -9,10 +9,10 @@ weavedir: /etc/cni/net.d
 flannel_dir: /etc/sysconfig
 
 #- image and other variable
-api_image: gcr.io/google_containers/kube-apiserver-amd64:v1.6.6
-controller_image: gcr.io/google_containers/kube-controller-manager-amd64:v1.6.6
-scheduler_image: gcr.io/google_containers/kube-scheduler-amd64:v1.6.6
-kube_proxy_image: gcr.io/google_containers/kube-proxy-amd64:v1.6.6
+api_image: gcr.io/google_containers/kube-apiserver-amd64:v1.7.5
+controller_image: gcr.io/google_containers/kube-controller-manager-amd64:v1.7.5
+scheduler_image: gcr.io/google_containers/kube-scheduler-amd64:v1.7.5
+kube_proxy_image: gcr.io/google_containers/kube-proxy-amd64:v1.7.5
 
 #- cluster service ip range
 service_ip_range: 100.64.0.0/12
