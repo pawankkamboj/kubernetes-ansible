@@ -1,5 +1,5 @@
 # HA-kubernetes-ansible
-Ansible playbook to create a Highly Available kubernetes cluster using latest release 1.6.4 on Bare metal system(CentOS-7.x).
+Ansible playbook to create a Highly Available kubernetes cluster using latest release 1.8.5 on Bare metal system(CentOS-7.x).
 Ansible version "2.1.2" is require to use this playbook.
 
 There are 8 roles define in this ansible playbook.
@@ -10,8 +10,8 @@ There are 8 roles define in this ansible playbook.
 - master - setup kubernetes master service - kube-apiserver, kube-controller, kube-scheduler, kubectl client
 - node - setup kubernetes node service - kubelet
 - sslcert - create all ssl certificates require to run secure K8S cluster
-- yum-repo - create epel and kubernetes-1.4 package repo
-- flannel - add flannel as network plugin, flannel version should be 0.5.5.
+- yum-repo - create epel and kubernetes package repo
+- flannel - add flannel as network plugin
 
 Following the below steps to create Kubernetes HA setup on Centos-7.
 - Prerequisite
