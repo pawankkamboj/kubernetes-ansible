@@ -9,6 +9,7 @@
     -  kubectl
     -  kubelet
     -  kubernetes-cni
+    -  python-rhsm-certificates
   register: masterpackage
 
 - name: create kubernetes config directory
