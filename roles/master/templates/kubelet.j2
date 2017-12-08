@@ -6,7 +6,7 @@ KUBELET_POD_INFRA_CONTAINER="--pod-infra-container-image=registry.access.redhat.
 
 # Add your own!
 #KUBELET_ARGS="--kubeconfig={{ kubeadminconfig }} --require-kubeconfig=true --pod-manifest-path={{ manifest_config_dir }} --register-schedulable=false"
-KUBELET_ARGS="--kubeconfig={{ kubeadminconfig }} --require-kubeconfig=true --pod-manifest-path={{ manifest_config_dir }} --cgroup-driver=systemd"
+KUBELET_ARGS="--kubeconfig={{ kubeadminconfig }} --require-kubeconfig=true --pod-manifest-path={{ manifest_config_dir }} --cgroup-driver=systemd --fail-swap-on=false"
 
 # set log
 KUBE_LOGTOSTDERR="--logtostderr=true --v=0"
