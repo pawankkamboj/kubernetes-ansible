@@ -8,6 +8,7 @@
   with_items:
     -  kubelet
     -  kubernetes-cni
+    -  python-rhsm-certificates
   register: nodepackage
 
 - name: add kubelet service file
