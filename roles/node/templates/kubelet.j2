@@ -5,7 +5,7 @@ KUBELET_ADDRESS="--address=0.0.0.0 --port=10250"
 KUBELET_POD_INFRA_CONTAINER="--pod-infra-container-image=registry.access.redhat.com/rhel7/pod-infrastructure:latest"
 
 # Add your own!
-KUBELET_ARGS="--kubeconfig={{ kubeletconfig }} --require-kubeconfig=true --pod-manifest-path=/etc/kubernetes/manifests --cgroup-driver=systemd"
+KUBELET_ARGS="--kubeconfig={{ kubeletconfig }} --require-kubeconfig=true --pod-manifest-path=/etc/kubernetes/manifests --cgroup-driver=systemd --fail-swap-on=false"
 
 # set log
 KUBE_LOGTOSTDERR="--logtostderr=true --v=0"
