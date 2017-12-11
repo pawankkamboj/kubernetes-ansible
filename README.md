@@ -21,18 +21,16 @@ Following the below steps to create Kubernetes HA setup on Centos-7.
 Download the Kubernetes-Ansible playbook and set up variable according to need in group variable file
 all.yml. Please read this file carefully and modify according to your need. 
 
-Run cluster.yml playbook to create Kubernetes HA cluster.
-
 Note - Addon roles should be run after cluster is fully operational. Addons are in addons.yml playbook.
 Here you go
-
+```
 git clone https://github.com/mhmxs/HA-kubernetes-ansible.git
 cd HA-kubernetes-ansible
 ansible-playbook -i inventory cluster.yml
 
 after cluster is up and running then run addon.yml to deploy add-on.
 ansible-playbook -i inventory addon.yml
-
+```
 
 
 
