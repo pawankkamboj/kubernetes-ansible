@@ -33,7 +33,10 @@
           "--root-ca-file={{ ca_cert }}",
           "--service-account-private-key-file={{ account_key }}",
           "--cluster-signing-cert-file={{ ca_cert }}",
-          "--cluster-signing-key-file={{ ca_key }}"
+          "--cluster-signing-key-file={{ ca_key }}",
+          "--allocate-node-cidrs=true",
+          "--cluster-cidr={{ flannel_network }}",
+          "--node-cidr-mask-size={{ flannel_subnet_len }}"
         ],
         "resources": {
           "requests": {

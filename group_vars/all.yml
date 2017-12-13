@@ -115,5 +115,5 @@ etcd_peer_key_file: "/etc/kubernetes/pki/etcd-key.pem"
 
 #- proxy configuration of yum repositories
 # -> uncomment if running with vagrant
-#yum_proxy: "http://192.168.50.99:3128"
+yum_proxy: "http://192.168.50.99:3128"
 

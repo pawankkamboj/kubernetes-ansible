@@ -7,6 +7,10 @@
   when: kube_proxy
   template: src=kube-proxy.yaml.j2 dest={{ kube_addon_dir }}/kube-proxy.yaml
 
+- name: run flannel
+  when: flannel
+  template: src=kube-flannel.yaml.j2 dest={{ kube_addon_dir }}/kube-flannel.yaml
+
 - name: copy kube-dns config file
   when: kube_dns
   template: src=kube-dns.yaml.j2 dest={{ kube_addon_dir }}/kube-dns.yaml
@@ -37,6 +41,20 @@
 - name: create kube-proxy
   when: kube_proxy and check_kube_proxy|failed
   shell: "kubectl create --kubeconfig={{ kubeadminconfig }} -f {{ kube_addon_dir }}/kube-proxy.yaml"
+  delegate_to: "{{ groups['masters'][0] }}"
+  run_once: true
+
+- name: check kube-flannel
+  when: flannel
+  shell: "kubectl get pods --all-namespaces=true | grep kube-flannel"
+  delegate_to: "{{ groups['masters'][0] }}"
+  run_once: true 
+  register: check_kube_flannel
+  ignore_errors: True
+  
+- name: create kube-flannel
+  when: flannel and check_kube_flannel|failed
+  shell: "kubectl create --kubeconfig={{ kubeadminconfig }} -f {{ kube_addon_dir }}/kube-flannel.yaml"
   delegate_to: "{{ groups['masters'][0] }}"
   run_once: true
 
