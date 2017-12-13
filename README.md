@@ -11,7 +11,6 @@ There are 8 roles define in this ansible playbook.
 - node - setup kubernetes node service - kubelet
 - sslcert - create all ssl certificates require to run secure K8S cluster
 - yum-repo - create epel and kubernetes package repo
-- flannel - add flannel as network plugin
 
 Following the below steps to create Kubernetes HA setup on Centos-7.
 - Prerequisite
@@ -29,6 +28,7 @@ cd HA-kubernetes-ansible
 ansible-playbook -i inventory cluster.yml
 
 after cluster is up and running then run addon.yml to deploy add-on.
+included addon are, flannel network, kube-proxy, kube-dns and kube-dashboard
 ansible-playbook -i inventory addon.yml
 ```
 
