@@ -1,10 +1,4 @@
 ---
-apiVersion: v1
-kind: ServiceAccount
-metadata:
-  name: flannel
-  namespace: kube-system
----
 kind: ConfigMap
 apiVersion: v1
 metadata:
@@ -52,7 +46,6 @@ spec:
       - key: node-role.kubernetes.io/master
         operator: Exists
         effect: NoSchedule
-      serviceAccountName: flannel
       initContainers:
       - name: install-cni
         image: quay.io/coreos/flannel:v0.9.1-amd64
@@ -72,7 +65,7 @@ spec:
       containers:
       - name: kube-flannel
         image: quay.io/coreos/flannel:v0.9.1-amd64
-        command: [ "/opt/bin/flanneld", "--ip-masq", "--kube-subnet-mgr" ]
+        command: [ "/opt/bin/flanneld", "--ip-masq", "--kube-subnet-mgr", "--kubeconfig-file=/run/kubeadminconfig", "--kube-api-url={{ api_lb_ip }}"]
         securityContext:
           privileged: true
         env:
@@ -89,6 +82,10 @@ spec:
           mountPath: /run
         - name: flannel-cfg
           mountPath: /etc/kube-flannel/
+        - mountPath: /run/kubeadminconfig
+          name: kubeconfig
+        - mountPath: /etc/kubernetes
+          name: pki
       volumes:
         - name: run
           hostPath:
@@ -99,3 +96,9 @@ spec:
         - name: flannel-cfg
           configMap:
             name: kube-flannel-cfg
+        - hostPath:
+            path: /etc/kubernetes
+          name: pki
+        - hostPath:
+            path: /etc/kubernetes/kubeadminconfig
+          name: kubeconfig
