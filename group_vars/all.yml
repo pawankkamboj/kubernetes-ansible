@@ -15,8 +15,8 @@ scheduler_image: gcr.io/google_containers/kube-scheduler-amd64:v1.8.5
 kube_proxy_image: gcr.io/google_containers/kube-proxy-amd64:v1.8.5
 
 #- cluster service ip range
-service_ip_range: 100.64.0.0/12
-kubernetes_service_ip: 100.64.0.1
+service_ip_range: 100.64.0.0/16
+kubernetes_service_ip: 100.64.0.1  #- IP of default kubernetes service, it is the first IP of network CIDR range
 
 #- all certifactes for cluster  
 account_key: /etc/kubernetes/pki/apiserver-key.pem
