@@ -51,7 +51,7 @@ auth_file: /etc/kubernetes/auth.csv
 policy_file: /etc/kubernetes/policy.json
 
 #- admin/readonly user password
-admin_user: admin
+admin_user: kube-admin
 admin_pass: AdminPass
 readonly_user: readonly
 readonly_pass: readonly
