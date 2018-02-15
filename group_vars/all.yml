@@ -45,7 +45,7 @@ masters_fqdn: ['master1', 'master2']
 #- cluster dns name and IP
 cluster_name: kubernetes
 
-#- api authorization ABAC
+#- api authorization ABAC and RBAC
 auth_mode: RBAC,ABAC
 auth_file: /etc/kubernetes/auth.csv
 policy_file: /etc/kubernetes/policy.json
