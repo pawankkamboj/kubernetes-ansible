@@ -38,6 +38,9 @@ lb_ip: 192.168.50.11
 kubeletconfig: /etc/kubernetes/kubeletconfig
 kubeadminconfig: /etc/kubernetes/kubeadminconfig
 
+#- auth mode - default is both
+authmode=RBAC,ABAC
+
 # all master fqdn name - it require to create ssl certificate
 # set it to only available api server
 masters_fqdn: ['master1', 'master2']
