@@ -52,11 +52,9 @@
   register: kubelet_service
 
 - name: copy auth file
-  when: auth_mode == "ABAC"
   template: src=auth.csv.j2 dest={{ kube_config_dir }}/auth.csv
 
 - name: copy policy.json file
-  when: auth_mode == "ABAC"
   copy: src=policy.json dest={{ kube_config_dir }}/policy.json     
 
 - name: create kubelet directory
