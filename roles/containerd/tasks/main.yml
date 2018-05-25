@@ -1,0 +1,61 @@
+---
+- name: "Install required packages on CentOS "
+  yum:
+    name: "{{ item }}"
+    state: latest
+  with_items:
+    - unzip
+    - tar
+    - btrfs-progs
+    - libseccomp
+    - util-linux
+    - socat
+    - libselinux-python
+
+- name: "Get Containerd"
+  unarchive:
+    src: "https://storage.googleapis.com/cri-containerd-release/cri-containerd-{{ containerd_release_version }}.linux-amd64.tar.gz"
+    dest: "/"
+    remote_src: yes
+
+- name: "Create a directory for cni config files"
+  file: path={{ cni_conf_dir }} state=directory
+
+- name: "Create a directory for cni plugin files"
+  file: path={{ cni_bin_dir }} state=directory
+
+- name: "Get cni binary"
+  unarchive:
+    src: "https://github.com/containernetworking/plugins/releases/download/{{ cni_version }}/cni-plugins-amd64-{{ cni_version }}.tgz"
+    dest: "{{ cni_bin_dir }}"
+    remote_src: yes
+
+- name: "Create a directory for containerd config"
+  file: path=/etc/containerd state=directory
+
+- name: "Add containerd config file"
+  blockinfile:
+    path: /etc/containerd/config.toml
+    create: yes
+    block: |
+      [plugins.cri]
+         enable_tls_streaming = true
+
+- name: "Start Containerd"
+  systemd: name=containerd daemon_reload=yes state=started enabled=yes
+
+- name: "Load br_netfilter kernel module"
+  modprobe:
+    name: br_netfilter
+    state: present
+
+- name: "Set bridge-nf-call-iptables" 
+  sysctl:
+    name: net.bridge.bridge-nf-call-iptables
+    value: 1
+
+- name: "Set ip_forward" 
+  sysctl:
+    name: net.ipv4.ip_forward
+    value: 1
+

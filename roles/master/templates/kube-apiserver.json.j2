@@ -12,15 +12,21 @@
   "spec": {
     "volumes": [
       {
-        "name": "certs",
+        "name": "pki",
+        "hostPath": {
+          "path": "/etc/kubernetes"
+        }
+      },
+      {
+        "name": "ca-certs",
         "hostPath": {
           "path": "/etc/ssl/certs"
         }
       },
       {
-        "name": "pki",
+        "name": "ca-certs-etc-pki",
         "hostPath": {
-          "path": "/etc/kubernetes"
+          "path": "/etc/pki"
         }
       }
     ],
@@ -32,7 +38,7 @@
           "/usr/local/bin/kube-apiserver",
           "--v=0",
           "--insecure-bind-address=127.0.0.1",
-          "--admission-control=NamespaceLifecycle,LimitRanger,ServiceAccount,PersistentVolumeLabel,DefaultStorageClass,ResourceQuota",
+          "--admission-control=NamespaceLifecycle,LimitRanger,ServiceAccount,PersistentVolumeLabel,DefaultStorageClass,DefaultTolerationSeconds,MutatingAdmissionWebhook,ValidatingAdmissionWebhook,ResourceQuota,Initializers",
           "--service-cluster-ip-range={{ service_ip_range }}",
           "--service-account-key-file={{ account_key }}",
           "--client-ca-file={{ ca_cert }}",
@@ -42,6 +48,14 @@
           "--allow-privileged",
 	  "--advertise-address={{ lb_ip }}",
 	  "--anonymous-auth=false",
+          "--requestheader-client-ca-file={{ ca_cert }}",
+          "--requestheader-extra-headers-prefix=X-Remote-Extra-",
+          "--requestheader-group-headers=X-Remote-Group",
+          "--requestheader-username-headers=X-Remote-User",
+          "--proxy-client-cert-file={{ api_cert }}",
+          "--proxy-client-key-file={{ api_key }}",
+          "--runtime-config=api/all=true",
+          "--requestheader-allowed-names=aggregator,kube-admin",
 	  {% if auth_mode == 'RBAC' -%}
           "--authorization-mode={{ auth_mode }}",
 	  {% else %}
@@ -49,7 +63,6 @@
 	  "--basic-auth-file={{ auth_file }}",
           "--authorization-policy-file={{ policy_file }}",
 	  {% endif -%}
-	  
           {% if etcd_peer_url_scheme == 'https' -%}
           "--etcd-cafile={{ etcd_ca_file }}",
           "--etcd-certfile={{ etcd_cert_file }}",
@@ -64,8 +77,14 @@
         },
         "volumeMounts": [
           {
-            "name": "certs",
+            "name": "ca-certs",
+            "readOnly": true,
             "mountPath": "/etc/ssl/certs"
+          },
+          {
+            "name": "ca-certs-etc-pki",
+            "readOnly": true,
+            "mountPath": "/etc/pki"
           },
           {
             "name": "pki",
