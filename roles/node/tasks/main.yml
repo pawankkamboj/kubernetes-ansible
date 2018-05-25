@@ -9,9 +9,9 @@
     -  python-rhsm-certificates
   register: nodepackage
 
-- name: add kubelet service file
-  copy: src=kubelet.service dest=/etc/systemd/system/kubelet.service owner=root group=root mode=0644
-  register: kubelet
+- name: copy kubelet-service file
+  template: src="kubelet.service.j2" dest=/etc/systemd/system/kubelet.service owner=root group=root mode=0644
+  register: kubelet_service
 
 - name: create kubernetes manifest config directory
   file: path={{ manifest_config_dir }} state=directory
