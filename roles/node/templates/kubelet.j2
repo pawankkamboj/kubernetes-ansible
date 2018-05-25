@@ -5,15 +5,15 @@ KUBELET_ADDRESS="--address=0.0.0.0 --port=10250"
 KUBELET_POD_INFRA_CONTAINER="--pod-infra-container-image=registry.access.redhat.com/rhel7/pod-infrastructure:latest"
 
 # Add your own!
-KUBELET_ARGS="--kubeconfig={{ kubeletconfig }} --require-kubeconfig=true --pod-manifest-path=/etc/kubernetes/manifests --cgroup-driver=systemd --fail-swap-on=false"
+KUBELET_ARGS="--kubeconfig={{ kubeadminconfig }} --require-kubeconfig=true --pod-manifest-path={{ manifest_config_dir }} --cgroup-driver=systemd --fail-swap-on=false --runtime-cgroups=/system.slice/containerd.service --container-runtime=remote --runtime-request-timeout=15m --container-runtime-endpoint=unix:///run/containerd/containerd.sock"
 
 # set log
 KUBE_LOGTOSTDERR="--logtostderr=true --v=0"
 
 # Should this cluster be allowed to run privileged docker containers
-KUBE_ALLOW_PRIV="--allow-privileged=true"
+KUBE_ALLOW_PRIV="--allow-privileged=true --hairpin-mode=hairpin-veth"
 
-#- kubelet network cni plugin
+# kubelet network 
 KUBELET_NETWORK_ARGS="--network-plugin=cni --cni-conf-dir=/etc/cni/net.d --cni-bin-dir=/opt/cni/bin"
 
 # kube dns 
