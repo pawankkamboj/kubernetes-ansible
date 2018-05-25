@@ -21,21 +21,11 @@
   tags:
     - etcd
 
-# Install docker
+# Install container runtime
 - hosts: all
-  when: use_containerd == "false"
   roles:
-    - docker
-  tags:
-    - docker
-
-# install containerd
-- hosts: all
-  when: use_containerd == "true"
-  roles:
-    - containerd
-  tags:
-    - containerd
+    - { role: docker, when: use_containerd == 'false' }
+    - { role: containerd, when: use_containerd == 'true' }
 
 # install haproxy
 - hosts: masters
