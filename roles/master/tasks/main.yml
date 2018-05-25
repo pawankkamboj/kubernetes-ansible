@@ -6,18 +6,12 @@
     state: latest
     update_cache: yes
   with_items:
-#    -  kubectl
-#    -  kubelet
-#    -  kubernetes-cni
     -  python-rhsm-certificates
   register: masterpackage
 
 - name: create kubernetes config directory
   file: path={{ manifest_config_dir }} state=directory
   register: manifest
-
-- name: copy etcd yaml file
-  template: src="etcd.yaml.j2" dest={{ manifest_config_dir }}/etcd.yaml
 
 - name: copy api config file
   template: src="kube-apiserver.json.j2" dest={{ manifest_config_dir }}/kube-apiserver.json
