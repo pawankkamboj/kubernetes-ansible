@@ -1,8 +1,13 @@
 [Unit]
 Description=Kubernetes Kubelet Server
 Documentation=https://github.com/GoogleCloudPlatform/kubernetes
+{% if use_containerd == 'false' -%}
 After=docker.service
 Requires=docker.service
+{% else %}
+After=containerd.service
+Requires=containerd.service
+{% endif -%}
 
 [Service]
 WorkingDirectory=/var/lib/kubelet
