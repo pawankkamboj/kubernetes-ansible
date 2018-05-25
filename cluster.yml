@@ -23,10 +23,19 @@
 
 # Install docker
 - hosts: all
+  when: use_containerd == "false"
   roles:
     - docker
   tags:
     - docker
+
+# install containerd
+- hosts: all
+  when: use_containerd == "true"
+  roles:
+    - containerd
+  tags:
+    - containerd
 
 # install haproxy
 - hosts: masters

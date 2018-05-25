@@ -15,13 +15,6 @@
   when: kube_dns
   template: src=kube-dns.yaml.j2 dest={{ kube_addon_dir }}/kube-dns.yaml
 
-- name: copy weavnet and weavescope config file
-  when: weave_net
-  template: src={{ item.src }} dest={{ kube_addon_dir }}/{{ item.dest }}
-  with_items:
-    - { src: "weavenet.yaml.j2", dest: "weavenet.yaml" }
-    - { src: "weavescopeui.yaml.j2", dest: "weavescopeui.yaml" }
-
 - name: copy kube-monitoring config file
   when: cluster_monitoring
   template: src=kube-monitoring.yaml.j2 dest={{ kube_addon_dir }}/kube-monitoring.yaml
@@ -55,23 +48,6 @@
 - name: create kube-flannel
   when: flannel and check_kube_flannel|failed
   shell: "kubectl create --kubeconfig={{ kubeadminconfig }} -f {{ kube_addon_dir }}/kube-flannel.yaml"
-  delegate_to: "{{ groups['masters'][0] }}"
-  run_once: true
-
-- name: check weavenet
-  when: weave_net
-  shell: "kubectl get pods --all-namespaces=true | grep weave-net"
-  delegate_to: "{{ groups['masters'][0] }}"
-  run_once: true
-  register: check_weavenet
-  ignore_errors: True
-
-- name: create weavenet and weave-ui
-  when: weave_net and check_weavenet|failed
-  shell: "kubectl create --kubeconfig={{ kubeadminconfig }} -f {{ kube_addon_dir }}/{{ item }}"
-  with_items:
-    - "weavenet.yaml"
-    - "weavescopeui.yaml"
   delegate_to: "{{ groups['masters'][0] }}"
   run_once: true
 

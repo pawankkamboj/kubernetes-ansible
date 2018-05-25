@@ -13,6 +13,7 @@ data:
       "name": "cbr0",
       "type": "flannel",
       "delegate": {
+        "hairpinMode": true,
         "isDefaultGateway": true
       }
     }
@@ -20,7 +21,7 @@ data:
     {
       "Network": "{{ flannel_network }}",
       "Backend": {
-        "Type": "vxlan"
+        "Type": "{{ flannel_backend }}"
       }
     }
 ---
