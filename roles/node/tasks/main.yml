@@ -65,7 +65,7 @@
   file: path=/var/lib/kubelet state=directory
   
 - name: start and enable kubelet on node
-  service: name=kubelet enabled=yes state=started
+  service: name=kubelet enabled=yes state=started daemon_reload=yes
   register: kubelet_start_node
 
 - name: reload kubelet

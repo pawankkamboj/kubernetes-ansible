@@ -6,9 +6,9 @@
     state: latest
     update_cache: yes
   with_items:
-    -  kubectl
-    -  kubelet
-    -  kubernetes-cni
+#    -  kubectl
+#    -  kubelet
+#    -  kubernetes-cni
     -  python-rhsm-certificates
   register: masterpackage
 
@@ -16,13 +16,8 @@
   file: path={{ manifest_config_dir }} state=directory
   register: manifest
 
-- name: create weave dir
-  when: weave_net
-  file: path={{ weavedir }} state=directory
-
-- name: copy weave file
-  when: weave_net
-  copy: src=10-weave.conf  dest=/etc/cni/net.d/10-weave.conf
+- name: copy etcd yaml file
+  template: src="etcd.yaml.j2" dest={{ manifest_config_dir }}/etcd.yaml
 
 - name: copy api config file
   template: src="kube-apiserver.json.j2" dest={{ manifest_config_dir }}/kube-apiserver.json
@@ -57,11 +52,17 @@
 - name: copy policy.json file
   copy: src=policy.json dest={{ kube_config_dir }}/policy.json     
 
+- name: copy kubectl binary and kubelet binary download script
+  copy: src=getkube.sh dest=/opt/getkube.sh
+
+- name: download k8s binary
+  shell: "sh /opt/getkube.sh {{ k8s_version }} BOTH"
+
 - name: create kubelet directory
   file: path=/var/lib/kubelet state=directory
   
 - name: start and enable kubelet
-  service: name=kubelet enabled=yes state=started
+  service: name=kubelet enabled=yes state=started daemon_reload=yes
   register: kubelet_start
 
 - name: reload kubelet
