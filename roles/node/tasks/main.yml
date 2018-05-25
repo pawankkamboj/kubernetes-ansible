@@ -6,8 +6,6 @@
     state: latest
     update_cache: yes
   with_items:
-    -  kubelet
-    -  kubernetes-cni
     -  python-rhsm-certificates
   register: nodepackage
 
@@ -18,14 +16,6 @@
 - name: create kubernetes manifest config directory
   file: path={{ manifest_config_dir }} state=directory
   register: manifest
-
-- name: create weave dir
-  when: weave_net
-  file: path={{ weavedir }} state=directory
-
-- name: copy weave file
-  when: weave_net
-  copy: src=10-weave.conf  dest=/etc/cni/net.d/10-weave.conf 
 
 - name: create kubernetes config directory
   file: path={{ kube_config_dir }} state=directory
@@ -42,7 +32,13 @@
 - name: copy kube config file
   template: src="kubeletconfig.j2" dest={{ kube_config_dir }}/kubeletconfig
   register: kube_config
+  
+- name: copy kubectl binary and kubelet binary download script
+  copy: src=getkube.sh dest=/opt/getkube.sh
 
+- name: download k8s binary
+  shell: "sh /opt/getkube.sh {{ k8s_version }} NODE"
+  
 - name: create ssl cert dir
   file: path={{ cert_dir }} state=directory
   register: ssl_dir
