@@ -1,5 +1,5 @@
 # HA-kubernetes-ansible
-Ansible playbook to create a Highly Available kubernetes cluster using latest release 1.8.5 on Bare metal system(CentOS-7.x).
+Ansible playbook to create a Highly Available kubernetes cluster using latest release 1.10.3 on Bare metal system(CentOS-7.x).
 Ansible version "2.4" is require to use this playbook.
 
 There are 8 roles define in this ansible playbook.
