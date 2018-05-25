@@ -10,7 +10,7 @@
   register: nodepackage
 
 - name: add kubelet service file
-  copy: src=kubelet.service dest=/etc/systemd/system/kubelet.service owner=root group=root mode=0755
+  copy: src=kubelet.service dest=/etc/systemd/system/kubelet.service owner=root group=root mode=0644
   register: kubelet
 
 - name: create kubernetes manifest config directory

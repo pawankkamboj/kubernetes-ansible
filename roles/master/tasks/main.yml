@@ -37,7 +37,7 @@
   register: kubelet_conf
 
 - name: copy kubelet-service file
-  copy: src=kubelet.service dest=/etc/systemd/system/kubelet.service owner=root group=root mode=0755
+  copy: src=kubelet.service dest=/etc/systemd/system/kubelet.service owner=root group=root mode=0644
   register: kubelet_service
 
 - name: copy auth file
