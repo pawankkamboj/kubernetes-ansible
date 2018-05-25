@@ -5,7 +5,11 @@ KUBELET_ADDRESS="--address=0.0.0.0 --port=10250"
 KUBELET_POD_INFRA_CONTAINER="--pod-infra-container-image=registry.access.redhat.com/rhel7/pod-infrastructure:latest"
 
 # Add your own!
-KUBELET_ARGS="--kubeconfig={{ kubeadminconfig }} --pod-manifest-path={{ manifest_config_dir }} --cgroup-driver=systemd --fail-swap-on=false --runtime-cgroups=/system.slice/containerd.service --container-runtime=remote --runtime-request-timeout=15m --container-runtime-endpoint=unix:///run/containerd/containerd.sock"
+{% if use_containerd == 'false' -%}
+KUBELET_ARGS="--kubeconfig={{ kubeadminconfig }} --pod-manifest-path={{ manifest_config_dir }} --fail-swap-on=false --cgroup-driver=systemd"
+{% else %}
+KUBELET_ARGS="--kubeconfig={{ kubeadminconfig }} --pod-manifest-path={{ manifest_config_dir }} --fail-swap-on=false --runtime-cgroups=/system.slice/containerd.service --container-runtime=remote --runtime-request-timeout=15m --container-runtime-endpoint=unix:///run/containerd/containerd.sock"
+{% endif -%}
 
 # set log
 KUBE_LOGTOSTDERR="--logtostderr=true --v=0"
