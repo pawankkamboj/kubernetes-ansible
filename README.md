@@ -11,7 +11,7 @@ There are 8 roles define in this ansible playbook.
 - node - setup kubernetes node service - kubelet
 - sslcert - create all ssl certificates require to run secure K8S cluster
 - yum-repo - create epel and kubernetes package repo
-- containerd - setup containerd 
+- containerd - IF want to use containerd runtime instead of Dockerg, use this role and enable this in group variable file
 
 Following the below steps to create Kubernetes HA setup on Centos-7.
 - Prerequisite
@@ -20,8 +20,6 @@ Following the below steps to create Kubernetes HA setup on Centos-7.
 
 Download the Kubernetes-Ansible playbook and set up variable according to need in group variable file
 all.yml. Please read this file carefully and modify according to your need. 
-
-Note - to use containerd to host container, set variable use_containerd to true, if want to use docker then set it to false.
 
 Note - Addon roles should be run after cluster is fully operational. Addons are in addons.yml playbook.
 Here you go
