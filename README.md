@@ -21,12 +21,12 @@ Ansible roles
 - sslcert - create all ssl certificates require to run secure K8S cluster
 - docker - install latest docker release on all cluster nodes
 - containerd - IF want to use containerd runtime instead of Dockerg, use this role and enable this in group variable file
-- etcd - setup etcd cluster, running as container.
-- haproxy - setup haproxy for API service HA, ignore it if LB already available.
-- keepalived - using keepalive for HA of IP address for kube-api server.
-- master - setup kubernetes master service - kube-apiserver, kube-controller, kube-scheduler, kubectl client
-- node - setup kubernetes node service - kubelet
-- addon - to create addon service, kube-proxy, kube-dns, kube-dashboard and cluster-monitoring using heapster and grafana/infuxdb
+- etcd - setup etcd cluster, running as container
+- haproxy - setup haproxy for API service HA
+- keepalived - using keepalive for HA of IP address for kube-api server
+- master - setup kubernetes master controller components - kube-apiserver, kube-controller, kube-scheduler, kubectl client
+- node - setup kubernetes node agent - kubelet
+- addon - to create addon service flanneld, kube-proxy, kube-dns, metrics-server
 
 Note - Addon roles should be run after cluster is fully operational. Addons are in addons.yml playbook.
 ```
