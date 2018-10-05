@@ -9,7 +9,7 @@
     - yum-repo
 
 # Install sslcert
-- hosts: masters
+- hosts: sslhost
   roles:
     - sslcert 
   tags:
