@@ -22,9 +22,6 @@
   with_items:
     - docker-ce
 
-- name: disable iptables and ip-masq
-  lineinfile: "dest=/usr/lib/systemd/system/docker.service regexp='^ExecStart=' line='ExecStart=/usr/bin/dockerd --selinux-enabled=false --iptables=false --ip-masq=false'"
-
 - name: Start Docker Daemon
   service: name=docker enabled=no state=started daemon_reload=yes
 
