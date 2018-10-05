@@ -129,8 +129,8 @@ spec:
         - --metric-resolution=30s
         # These are needed for GKE, which doesn't support secure communication yet.
         # Remove these lines for non-GKE clusters, and when GKE supports token-based auth.
-        #- --kubelet-port=10255
-        #- --deprecated-kubelet-completely-insecure=true
+        - --kubelet-port=10255
+        - --deprecated-kubelet-completely-insecure=true
         ports:
         - containerPort: 443
           name: https
