@@ -1,17 +1,60 @@
 ---
+- name: Install Docker dependency
+  when: ansible_os_family == "RedHat"
+  yum:
+    name: "{{ item }}"
+    state: latest
+    update_cache: yes
+  with_items:
+    - yum-utils
+    - lvm2
+    - device-mapper-persistent-data
+
+- name: install docker repo
+  command: "yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo"
+
 - name: Install Docker
   when: ansible_os_family == "RedHat"
   yum:
-    name: docker
+    name: "{{ item }}"
     state: latest
+    update_cache: yes
+  with_items:
+    - docker-ce
 
-- name: Add any insecure registrys to docker config
-  lineinfile: dest=/etc/sysconfig/docker regexp=^INSECURE_REGISTRY= line=INSECURE_REGISTRY="{% for reg in insecure_registrys %}--insecure-registry={{ reg }} {% endfor %}"
-  when: insecure_registrys is defined and insecure_registrys > 0
+- name: disable iptables and ip-masq
+  lineinfile: "dest=/usr/lib/systemd/system/docker.service regexp='^ExecStart=' line='ExecStart=/usr/bin/dockerd --selinux-enabled=false --iptables=false --ip-masq=false'"
 
-- name: add registry
-  lineinfile: dest=/etc/sysconfig/docker regexp=^ADD_REGISTRY= line=ADD_REGISTRY="{% for reg in add_registry %}--add-registry={{ reg }} {%endfor %}"
-  when: add_registry is defined and add_registry > 0
+- name: Start Docker Daemon
+  service: name=docker enabled=no state=started daemon_reload=yes
 
-- name: Enable Docker
-  service: name=docker enabled=no state=started
+- name: "Load br_netfilter kernel module"
+  modprobe:
+    name: br_netfilter
+    state: present
+
+- name: "Set bridge-nf-call-iptables"
+  sysctl:
+    name: net.bridge.bridge-nf-call-iptables
+    value: 1
+
+- name: "Set ip_forward"
+  sysctl:
+    name: net.ipv4.ip_forward
+    value: 1
+
+- name: "Create a directory for cni plugin"
+  file: path={{ cni_bin_dir }} state=directory
+
+- name: "Get cni binary"
+  unarchive:
+    src: "https://github.com/containernetworking/plugins/releases/download/{{ cni_version }}/cni-plugins-amd64-{{ cni_version }}.tgz"
+    dest: "{{ cni_bin_dir }}"
+    remote_src: yes
+
+- name: disable selinux
+  selinux:
+    state: disabled
+
+- name: disable selinux in file
+  lineinfile: "dest=/etc/selinux/config state=present regexp='^SELINUX=' line='SELINUX=disabled'"

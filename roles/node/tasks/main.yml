@@ -1,14 +1,4 @@
 ---
-- name: Install Kubernetes Node packages
-  when: ansible_os_family == "RedHat"
-  yum:
-    name: "{{ item }}"
-    state: latest
-    update_cache: yes
-  with_items:
-    -  python-rhsm-certificates
-  register: nodepackage
-
 - name: copy kubelet-service file
   template: src="kubelet.service.j2" dest=/etc/systemd/system/kubelet.service owner=root group=root mode=0644
   register: kubelet_service
@@ -29,41 +19,21 @@
   template: src="kubelet.j2" dest={{ kube_config_dir }}/kubelet
   register: kubeletconfig
 
-- name: copy kube config file
-  template: src="kubeletconfig.j2" dest={{ kube_config_dir }}/kubeletconfig
-  register: kube_config
-  
+- name: copy kubelet.yaml
+  template: src=kubelet.yaml.j2 dest={{ kube_config_dir }}/kubelet.yaml
+
+- name: copy kubelet.conf
+  template: src=kubelet.conf.j2 dest={{ kube_config_dir }}/kubelet.conf
+
 - name: copy kubectl binary and kubelet binary download script
   copy: src=getkube.sh dest=/opt/getkube.sh
 
 - name: download k8s binary
   shell: "sh /opt/getkube.sh {{ k8s_version }} NODE"
   
-- name: create ssl cert dir
-  file: path={{ cert_dir }} state=directory
-  register: ssl_dir
-
-- name: copy openssl
-  when: openssl_cert|changed
-  template: src="openssl.conf.j2" dest={{ kube_config_dir }}/pki/openssl.conf
-  register: openssl_config
-
-- name: create certificate for node
-#  when: openssl_config|changed
-  register: create_ssl_cert
-  command: "{{ item }}"
-  with_items:
-    - "openssl genrsa -out {{ cert_dir }}/node-key.pem 2048"
-    - "openssl req -new -key {{ cert_dir }}/node-key.pem -out {{ cert_dir }}/node.csr -subj '/CN=kube-node' -config {{ cert_dir }}/openssl.conf"
-    - "openssl x509 -req -in {{ cert_dir }}/node.csr -CA {{ cert_dir }}/ca.pem -CAkey {{ cert_dir }}/ca-key.pem -CAcreateserial -out {{ cert_dir }}/node.pem -days 1000 -extensions v3_req -extfile {{ cert_dir }}/openssl.conf"
-
 - name: create kubelet directory
   file: path=/var/lib/kubelet state=directory
   
 - name: start and enable kubelet on node
   service: name=kubelet enabled=yes state=started daemon_reload=yes
   register: kubelet_start_node
-
-- name: reload kubelet
-  when: create_ssl_cert|changed or kubelet|changed or kubeletconfig|changed
-  service: name=kubelet state=restarted

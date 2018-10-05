@@ -1,0 +1,31 @@
+vrrp_script check_haproxy {
+	script "pidof haproxy"
+	interval 2
+}
+
+vrrp_instance VI_01 {
+	state BACKUP
+	interface {{ keepalived_shared_iface }}
+	virtual_router_id 100
+	priority 100
+	advert_int 1
+
+	authentication {
+        	auth_type PASS
+	        auth_pass k8s@123
+        }
+        unicast_peer {
+	{% for host in groups['masters'] %}
+	    {{ host }} 
+        {% if not loop.last -%}{%- endif -%}
+	{% endfor %}
+        }
+
+	virtual_ipaddress {
+		{{ lb_ip }} {{ keepalived_shared_iface }}
+	}
+
+	track_script {
+     		check_haproxy
+	}
+}

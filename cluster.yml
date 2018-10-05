@@ -1,23 +1,24 @@
 ---
 # This playbook deploys a kubernetes cluster with the default addons.
 
+# Install yum-repo
 - hosts: all
   roles:
     - yum-repo
   tags:
     - yum-repo
 
-# install ssl cert
-- hosts: sslhost
+# Install sslcert
+- hosts: masters
   roles:
-     -  sslcert
+    - sslcert 
   tags:
-     -  sslcert
+    - sslcert
 
 # Install etcd
 - hosts: etcd
   roles:
-   -   etcd
+    - etcd
   tags:
     - etcd
 
@@ -33,6 +34,13 @@
     - haproxy
   tags:
     - haproxy
+
+# install keepalived
+- hosts: masters
+  roles:
+    - keepalived
+  tags:
+    - keepalived
 
 # install kubernetes master services
 - hosts: masters

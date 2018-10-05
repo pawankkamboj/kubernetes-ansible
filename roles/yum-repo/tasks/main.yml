@@ -5,17 +5,6 @@
     name: epel-release
     state: latest
 
-- name: Adding Kubernetes repository
-  when: ansible_os_family == "RedHat"
-  yum_repository:
-    name: Kubernetes
-    description: Kubernetes repo
-    file: kubernetes
-    baseurl: http://yum.kubernetes.io/repos/kubernetes-el7-x86_64
-    enabled: yes
-    gpgcheck: no
-  register: kuberepo
-
 - name: Use yum proxy
   when: ansible_os_family == "RedHat" and yum_proxy != ""
   lineinfile:

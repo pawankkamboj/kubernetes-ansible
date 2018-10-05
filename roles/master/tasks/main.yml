@@ -1,28 +1,18 @@
 ---
-- name: Install Kubernetes packages
-  when: ansible_os_family == "RedHat"
-  yum:
-    name: "{{ item }}"
-    state: latest
-    update_cache: yes
-  with_items:
-    -  python-rhsm-certificates
-  register: masterpackage
-
 - name: create kubernetes config directory
   file: path={{ manifest_config_dir }} state=directory
   register: manifest
 
 - name: copy api config file
-  template: src="kube-apiserver.json.j2" dest={{ manifest_config_dir }}/kube-apiserver.json
+  template: src="kube-apiserver.yaml.j2" dest={{ manifest_config_dir }}/kube-apiserver.yaml
   register: api
 
 - name: copy controller config file
-  template: src="kube-controller-manager.json.j2" dest={{ manifest_config_dir }}/kube-controller-manager.json
+  template: src="kube-controller-manager.yaml.j2" dest={{ manifest_config_dir }}/kube-controller-manager.yaml
   register: controller
 
 - name: copy scheduler config file
-  template: src="kube-scheduler.json.j2" dest={{ manifest_config_dir }}/kube-scheduler.json
+  template: src="kube-scheduler.yaml.j2" dest={{ manifest_config_dir }}/kube-scheduler.yaml
   register: scheduler
 
 - name: copy kube config file
@@ -40,11 +30,17 @@
   template: src="kubelet.service.j2" dest=/etc/systemd/system/kubelet.service owner=root group=root mode=0644
   register: kubelet_service
 
-- name: copy auth file
-  template: src=auth.csv.j2 dest={{ kube_config_dir }}/auth.csv
+- name: copy kubelet.yaml 
+  template: src=kubelet.yaml.j2 dest={{ kube_config_dir }}/kubelet.yaml
 
-- name: copy policy.json file
-  copy: src=policy.json dest={{ kube_config_dir }}/policy.json     
+- name: copy kubelet.conf
+  template: src=kubelet.conf.j2 dest={{ kube_config_dir }}/kubelet.conf
+  
+- name: copy controller-manager.conf
+  template: src=controller-manager.conf.j2 dest={{ kube_config_dir }}/controller-manager.conf
+
+- name: copy scheduler.conf.j2
+  template: src=scheduler.conf.j2 dest={{ kube_config_dir }}/scheduler.conf
 
 - name: copy kubectl binary and kubelet binary download script
   copy: src=getkube.sh dest=/opt/getkube.sh
@@ -62,4 +58,3 @@
 - name: reload kubelet
   when: openssl_cert|changed or kubelet_service|changed or kubelet_conf|changed
   service: name=kubelet state=restarted
-

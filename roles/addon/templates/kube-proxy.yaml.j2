@@ -1,64 +1,146 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: kube-proxy
+  namespace: kube-system
+---
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1beta1
+metadata:
+  name: system:kube-proxy
+  labels:
+    addonmanager.kubernetes.io/mode: Reconcile
+subjects:
+  - kind: ServiceAccount
+    name: kube-proxy
+    namespace: kube-system
+roleRef:
+  kind: ClusterRole
+  name: system:node-proxier
+  apiGroup: rbac.authorization.k8s.io
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  labels:
+    k8s-app: kube-proxy
+  name: kube-proxy
+  namespace: kube-system
+data:
+  config.conf: |-
+    apiVersion: kubeproxy.config.k8s.io/v1alpha1
+    bindAddress: 0.0.0.0
+    clientConnection:
+      acceptContentTypes: ""
+      burst: 10
+      contentType: application/vnd.kubernetes.protobuf
+      kubeconfig: /var/lib/kube-proxy/kubeconfig.conf
+      qps: 5
+    clusterCIDR: {{ flannel_network }}
+    configSyncPeriod: 15m0s
+    conntrack:
+      max: null
+      maxPerCore: 32768
+      min: 131072
+      tcpCloseWaitTimeout: 1h0m0s
+      tcpEstablishedTimeout: 24h0m0s
+    enableProfiling: false
+    healthzBindAddress: 0.0.0.0:10256
+    hostnameOverride: ""
+    iptables:
+      masqueradeAll: false
+      masqueradeBit: 14
+      minSyncPeriod: 0s
+      syncPeriod: 30s
+    kind: KubeProxyConfiguration
+    metricsBindAddress: 127.0.0.1:10249
+    mode: "iptables"
+    nodePortAddresses: null
+    oomScoreAdj: -999
+    portRange: ""
+    resourceContainer: /kube-proxy
+    udpIdleTimeout: 250ms
+  kubeconfig.conf: |-
+    apiVersion: v1
+    kind: Config
+    clusters:
+    - cluster:
+        certificate-authority: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+        server: {{ api_lb_ip }}
+      name: default
+    contexts:
+    - context:
+        cluster: default
+        namespace: default
+        user: default
+      name: default
+    current-context: default
+    users:
+    - name: default
+      user:
+        tokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token
+---
 apiVersion: extensions/v1beta1
 kind: DaemonSet
 metadata:
   labels:
-    component: kube-proxy-amd64
-    k8s-app: kube-proxy-amd64
-    kubernetes.io/cluster-service: "true"
-    name: kube-proxy-amd64
-    tier: node
-  name: kube-proxy-amd64
+    k8s-app: kube-proxy
+  name: kube-proxy
   namespace: kube-system
 spec:
+  revisionHistoryLimit: 10
   selector:
     matchLabels:
-      component: kube-proxy-amd64
-      k8s-app: kube-proxy-amd64
-      kubernetes.io/cluster-service: "true"
-      name: kube-proxy-amd64
-      tier: node
+      k8s-app: kube-proxy
   template:
     metadata:
       annotations:
-        scheduler.alpha.kubernetes.io/tolerations: '[{"key":"dedicated","value":"master","effect":"NoSchedule"}]'
+        scheduler.alpha.kubernetes.io/critical-pod: ""
       labels:
-        component: kube-proxy-amd64
-        k8s-app: kube-proxy-amd64
-        kubernetes.io/cluster-service: "true"
-        name: kube-proxy-amd64
-        tier: node
+        k8s-app: kube-proxy
     spec:
       containers:
       - command:
         - /usr/local/bin/kube-proxy
-        - --v=0
-        - --master={{ api_lb_ip }}
-        - --kubeconfig=/run/kubeadminconfig
+        - --config=/var/lib/kube-proxy/config.conf
+        - --cleanup-ipvs=false
         image: {{ kube_proxy_image }}
         imagePullPolicy: IfNotPresent
         name: kube-proxy
         securityContext:
           privileged: true
         terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
         volumeMounts:
-        - mountPath: /var/run/dbus
-          name: dbus
-        - mountPath: /run/kubeadminconfig
-          name: kubeconfig
-        - mountPath: {{ kube_config_dir }}
-          name: pki
+        - mountPath: /var/lib/kube-proxy
+          name: kube-proxy
+        - mountPath: /run/xtables.lock
+          name: xtables-lock
+        - mountPath: /lib/modules
+          name: lib-modules
+          readOnly: true
       dnsPolicy: ClusterFirst
       hostNetwork: true
-      nodeSelector:
-        beta.kubernetes.io/arch: amd64
+      priorityClassName: system-node-critical
       restartPolicy: Always
+      serviceAccount: kube-proxy
+      serviceAccountName: kube-proxy
+      terminationGracePeriodSeconds: 30
       volumes:
+      - configMap:
+          defaultMode: 420
+          name: kube-proxy
+        name: kube-proxy
       - hostPath:
-          path: {{ kubeadminconfig }}
-        name: kubeconfig
+          path: /run/xtables.lock
+          type: FileOrCreate
+        name: xtables-lock
       - hostPath:
-          path: /var/run/dbus
-        name: dbus
-      - hostPath:
-          path: {{ kube_config_dir }}
-        name: pki
+          path: /lib/modules
+          type: ""
+        name: lib-modules
+  templateGeneration: 1
+  updateStrategy:
+    rollingUpdate:
+      maxUnavailable: 1
+    type: RollingUpdate

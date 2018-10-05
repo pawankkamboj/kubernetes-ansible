@@ -1,0 +1,87 @@
+{% macro etcd_cluster() -%}
+{% for node in groups['etcd'] -%}
+  {{ etcd_peer_url_scheme }}://{{ node }}:2379
+  {%- if not loop.last -%},{%- endif -%}
+{%- endfor -%}
+{% endmacro -%}
+apiVersion: v1
+kind: Pod
+metadata:
+  annotations:
+    scheduler.alpha.kubernetes.io/critical-pod: ""
+  labels:
+    component: kube-apiserver
+    tier: control-plane
+  name: kube-apiserver
+  namespace: kube-system
+spec:
+  containers:
+  - command:
+    - kube-apiserver
+    - --authorization-mode=Node,RBAC
+    - --advertise-address={{ hostvars[inventory_hostname]['ansible_' + bind_interface].ipv4.address }}
+    - --bind-address={{ hostvars[inventory_hostname]['ansible_' + bind_interface].ipv4.address }}
+    - --allow-privileged=true
+    - --client-ca-file=/etc/kubernetes/pki/ca.pem
+    - --enable-admission-plugins=NodeRestriction
+    - --enable-bootstrap-token-auth=true
+    - --etcd-cafile=/etc/kubernetes/pki/ca.pem
+    - --etcd-certfile=/etc/kubernetes/pki/etcd.pem
+    - --etcd-keyfile=/etc/kubernetes/pki/etcd-key.pem
+    - --etcd-servers={{ etcd_cluster() }}
+    - --insecure-port=0
+    - --kubelet-client-certificate=/etc/kubernetes/pki/kubelet-client.pem
+    - --kubelet-client-key=/etc/kubernetes/pki/kubelet-client-key.pem
+    - --kubelet-preferred-address-types=InternalIP,ExternalIP,Hostname
+    - --proxy-client-cert-file=/etc/kubernetes/pki/front-proxy-client.pem
+    - --proxy-client-key-file=/etc/kubernetes/pki/front-proxy-client-key.pem
+    - --requestheader-allowed-names=front-proxy-client,aggregator,kube-admin,kube-apiserver
+    - --requestheader-client-ca-file=/etc/kubernetes/pki/ca.pem
+    - --requestheader-extra-headers-prefix=X-Remote-Extra-
+    - --requestheader-group-headers=X-Remote-Group
+    - --requestheader-username-headers=X-Remote-User
+    - --secure-port={{ api_secure_port }}
+    - --service-account-key-file=/etc/kubernetes/pki/apiserver-key.pem
+    - --service-cluster-ip-range={{ service_ip_range }}
+    - --tls-cert-file=/etc/kubernetes/pki/apiserver.pem
+    - --tls-private-key-file=/etc/kubernetes/pki/apiserver-key.pem
+    image: {{ api_image }}
+    imagePullPolicy: IfNotPresent
+    livenessProbe:
+      failureThreshold: 8
+      httpGet:
+        host: {{ hostvars[inventory_hostname]['ansible_' + bind_interface].ipv4.address }}
+        path: /healthz
+        port: {{ api_secure_port }}
+        scheme: HTTPS
+      initialDelaySeconds: 15
+      timeoutSeconds: 15
+    name: kube-apiserver
+    resources:
+      requests:
+        cpu: 250m
+    volumeMounts:
+    - mountPath: /etc/kubernetes/pki
+      name: k8s-certs
+      readOnly: true
+    - mountPath: /etc/ssl/certs
+      name: ca-certs
+      readOnly: true
+    - mountPath: /etc/pki
+      name: etc-pki
+      readOnly: true
+  hostNetwork: true
+  priorityClassName: system-cluster-critical
+  volumes:
+  - hostPath:
+      path: /etc/kubernetes/pki
+      type: DirectoryOrCreate
+    name: k8s-certs
+  - hostPath:
+      path: /etc/ssl/certs
+      type: DirectoryOrCreate
+    name: ca-certs
+  - hostPath:
+      path: /etc/pki
+      type: DirectoryOrCreate
+    name: etc-pki

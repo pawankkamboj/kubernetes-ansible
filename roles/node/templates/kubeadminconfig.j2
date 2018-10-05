@@ -13,10 +13,6 @@ contexts:
     cluster: cluster-ssl
     user: admin_ssl
   name: admin@cluster-ssl
-- context:
-    cluster: cluster-sslskip
-    user: admin_auth
-  name: admin@cluster-sslskip
 current-context: admin@cluster-ssl
 kind: Config
 users:
@@ -24,7 +20,3 @@ users:
   user:
     client-certificate: {{ admin_cert }}
     client-key: {{ admin_key }}
-- name: admin_auth
-  user:
-   username: {{ admin_user }}
-   password: {{ admin_pass }}

@@ -1,0 +1,29 @@
+---
+- name: Install keepalived packages
+  when: ansible_os_family == "RedHat"
+  yum:
+    name: "{{ item }}"
+    state: latest
+    update_cache: yes
+  with_items:
+    - iproute 
+    - kmod 
+    - psmisc 
+    - nmap-ncat 
+    - ipset 
+    - ipset-libs
+    - keepalived 
+    - ipvsadm
+
+- name: copy keepalived config file 
+  template: src="keepalived.conf.j2" dest=/etc/keepalived/keepalived.conf 
+  register: config
+
+- name: start and enable keepalived
+  service: name=keepalived enabled=yes state=started daemon_reload=yes
+  register: keepalived_start
+
+- name: keepalived reload
+  when: config|changed 
+  service: name=keepalived state=restarted
+

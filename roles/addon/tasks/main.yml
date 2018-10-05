@@ -7,89 +7,38 @@
   when: kube_proxy
   template: src=kube-proxy.yaml.j2 dest={{ kube_addon_dir }}/kube-proxy.yaml
 
-- name: run flannel
+- name: copy flannel config file
   when: flannel
   template: src=kube-flannel.yaml.j2 dest={{ kube_addon_dir }}/kube-flannel.yaml
 
 - name: copy kube-dns config file
   when: kube_dns
-  template: src=kube-dns.yaml.j2 dest={{ kube_addon_dir }}/kube-dns.yaml
+  template: src=coredns.yaml.j2 dest={{ kube_addon_dir }}/coredns.yaml
 
-- name: copy kube-monitoring config file
-  when: cluster_monitoring
-  template: src=kube-monitoring.yaml.j2 dest={{ kube_addon_dir }}/kube-monitoring.yaml
-
-- name: copy kube-dash config file
-  when: kube_dash
-  template: src=dashboard.yaml.j2  dest={{ kube_addon_dir }}/dashboard.yaml
-
-- name: check kube-proxy
-  when: kube_proxy
-  shell: "kubectl get pods --all-namespaces=true | grep kube-proxy"
-  delegate_to: "{{ groups['masters'][0] }}"
-  run_once: true
-  register: check_kube_proxy
-  ignore_errors: True
+- name: copy metrics-server
+  when: metrics_server
+  template: src=metrics-server.yaml.j2 dest={{ kube_addon_dir }}/metrics-server.yaml
 
 - name: create kube-proxy
-  when: kube_proxy and check_kube_proxy|failed
-  shell: "kubectl create --kubeconfig={{ kubeadminconfig }} -f {{ kube_addon_dir }}/kube-proxy.yaml"
+  when: kube_proxy 
+  shell: "kubectl apply --kubeconfig={{ kubeadminconfig }} -f {{ kube_addon_dir }}/kube-proxy.yaml"
   delegate_to: "{{ groups['masters'][0] }}"
   run_once: true
 
-- name: check kube-flannel
-  when: flannel
-  shell: "kubectl get pods --all-namespaces=true | grep kube-flannel"
-  delegate_to: "{{ groups['masters'][0] }}"
-  run_once: true 
-  register: check_kube_flannel
-  ignore_errors: True
-  
 - name: create kube-flannel
-  when: flannel and check_kube_flannel|failed
-  shell: "kubectl create --kubeconfig={{ kubeadminconfig }} -f {{ kube_addon_dir }}/kube-flannel.yaml"
+  when: flannel
+  shell: "kubectl apply --kubeconfig={{ kubeadminconfig }} -f {{ kube_addon_dir }}/kube-flannel.yaml"
   delegate_to: "{{ groups['masters'][0] }}"
   run_once: true
-
-- name: check kube dns
-  when: kube_dns
-  shell: "kubectl get pods --all-namespaces=true | grep kube-dns"
-  delegate_to: "{{ groups['masters'][0] }}"
-  run_once: true
-  register: check_dns
-  ignore_errors: True
 
 - name: create kube-dns
-  when: kube_dns and check_dns|failed
-  shell: "kubectl create --kubeconfig={{ kubeadminconfig }} -f {{ kube_addon_dir }}/kube-dns.yaml"
+  when: kube_dns
+  shell: "kubectl apply --kubeconfig={{ kubeadminconfig }} -f {{ kube_addon_dir }}/coredns.yaml"
   delegate_to: "{{ groups['masters'][0] }}"
   run_once: true
 
-- name: check kube-monitoring
-  when: cluster_monitoring
-  shell: "kubectl get pods --all-namespaces=true | grep heapster"
+- name: create metrics-server
+  when: metrics_server
+  shell: "kubectl apply --kubeconfig={{ kubeadminconfig }} -f {{ kube_addon_dir }}/metrics-server.yaml"
   delegate_to: "{{ groups['masters'][0] }}"
   run_once: true
-  register: check_monitoring
-  ignore_errors: True
-
-- name: create kube-monitoring
-  when: cluster_monitoring and check_monitoring|failed
-  shell: "kubectl create --kubeconfig={{ kubeadminconfig }} -f {{ kube_addon_dir }}/kube-monitoring.yaml"
-  delegate_to: "{{ groups['masters'][0] }}"
-  run_once: true
-
-- name: check kube-dash
-  when: kube_dash
-  shell: "kubectl get pods --all-namespaces=true | grep kubernetes-dashboard"
-  delegate_to: "{{ groups['masters'][0] }}"
-  run_once: true
-  register: check_dash
-  ignore_errors: True
-
-- name: create kube-dash
-  when: kube_dash and check_dash|failed
-  shell: "kubectl create --kubeconfig={{ kubeadminconfig }} -f {{ kube_addon_dir }}/dashboard.yaml"
-  delegate_to: "{{ groups['masters'][0] }}"
-  run_once: true
-

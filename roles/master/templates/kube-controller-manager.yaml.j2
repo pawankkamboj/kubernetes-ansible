@@ -1,0 +1,84 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  annotations:
+    scheduler.alpha.kubernetes.io/critical-pod: ""
+  creationTimestamp: null
+  labels:
+    component: kube-controller-manager
+    tier: control-plane
+  name: kube-controller-manager
+  namespace: kube-system
+spec:
+  containers:
+  - command:
+    - kube-controller-manager
+    - --address=127.0.0.1
+    - --allocate-node-cidrs=true
+    #- --authentication-kubeconfig=/etc/kubernetes/controller-manager.conf
+    #- --authorization-kubeconfig=/etc/kubernetes/controller-manager.conf
+    #- --client-ca-file=/etc/kubernetes/pki/ca.pem
+    - --cluster-cidr={{ flannel_network }}
+    - --cluster-signing-cert-file=/etc/kubernetes/pki/ca.pem
+    - --cluster-signing-key-file=/etc/kubernetes/pki/ca-key.pem
+    #- --controllers=*,bootstrapsigner,tokencleaner
+    - --kubeconfig=/etc/kubernetes/controller-manager.conf
+    - --leader-elect=true
+    - --node-cidr-mask-size=24
+    #- --requestheader-client-ca-file=/etc/kubernetes/pki/ca.pem
+    - --root-ca-file=/etc/kubernetes/pki/ca.pem
+    - --service-account-private-key-file=/etc/kubernetes/pki/apiserver-key.pem
+    - --use-service-account-credentials=true
+    image: {{ controller_image }}
+    imagePullPolicy: IfNotPresent
+    livenessProbe:
+      failureThreshold: 8
+      httpGet:
+        host: 127.0.0.1
+        path: /healthz
+        port: 10252
+        scheme: HTTP
+      initialDelaySeconds: 15
+      timeoutSeconds: 15
+    name: kube-controller-manager
+    resources:
+      requests:
+        cpu: 200m
+    volumeMounts:
+    - mountPath: /etc/kubernetes/pki
+      name: k8s-certs
+      readOnly: true
+    - mountPath: /etc/ssl/certs
+      name: ca-certs
+      readOnly: true
+    - mountPath: /etc/kubernetes/controller-manager.conf
+      name: kubeconfig
+      readOnly: true
+    - mountPath: /usr/libexec/kubernetes/kubelet-plugins/volume/exec
+      name: flexvolume-dir
+    - mountPath: /etc/pki
+      name: etc-pki
+      readOnly: true
+  hostNetwork: true
+  priorityClassName: system-cluster-critical
+  volumes:
+  - hostPath:
+      path: /etc/kubernetes/controller-manager.conf
+      type: FileOrCreate
+    name: kubeconfig
+  - hostPath:
+      path: /usr/libexec/kubernetes/kubelet-plugins/volume/exec
+      type: DirectoryOrCreate
+    name: flexvolume-dir
+  - hostPath:
+      path: /etc/pki
+      type: DirectoryOrCreate
+    name: etc-pki
+  - hostPath:
+      path: /etc/kubernetes/pki
+      type: DirectoryOrCreate
+    name: k8s-certs
+  - hostPath:
+      path: /etc/ssl/certs
+      type: DirectoryOrCreate
+    name: ca-certs

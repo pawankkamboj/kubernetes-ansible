@@ -20,13 +20,28 @@
   command: "{{ item }}"
   with_items:
     - "openssl genrsa -out {{ master_cert_dir }}/ca-key.pem 2048"
-    - "openssl req -x509 -new -nodes -key {{ master_cert_dir }}/ca-key.pem -days 1000 -out {{ master_cert_dir }}/ca.pem -subj '/CN=kube-ca'"
+    - "openssl req -x509 -new -nodes -key {{ master_cert_dir }}/ca-key.pem -days 3666 -out {{ master_cert_dir }}/ca.pem -subj '/CN=kube-ca'"
     - "openssl genrsa -out {{ master_cert_dir }}/admin-key.pem 2048"
     - "openssl req -new -key {{ master_cert_dir }}/admin-key.pem -out {{ master_cert_dir }}/admin.csr -subj '/CN=kube-admin/O=system:masters'"
-    - "openssl x509 -req -in {{ master_cert_dir }}/admin.csr -CA {{ master_cert_dir }}/ca.pem -CAkey {{ master_cert_dir }}/ca-key.pem -CAcreateserial -out {{ master_cert_dir }}/admin.pem -days 1000"
+    - "openssl x509 -req -in {{ master_cert_dir }}/admin.csr -CA {{ master_cert_dir }}/ca.pem -CAkey {{ master_cert_dir }}/ca-key.pem -CAcreateserial -out {{ master_cert_dir }}/admin.pem -days 3666"
     - "openssl genrsa -out {{ master_cert_dir }}/apiserver-key.pem 2048"
     - "openssl req -new -key {{ master_cert_dir }}/apiserver-key.pem -out {{ master_cert_dir }}/apiserver.csr -subj '/CN=kube-apiserver/O=system:masters' -config {{ master_cert_dir }}/openssl.conf" 
-    - "openssl x509 -req -in {{ master_cert_dir }}/apiserver.csr -CA {{ master_cert_dir }}/ca.pem -CAkey {{ master_cert_dir }}/ca-key.pem -CAcreateserial -out {{ master_cert_dir }}/apiserver.pem -days 1000 -extensions v3_req -extfile {{ master_cert_dir }}/openssl.conf"
+    - "openssl x509 -req -in {{ master_cert_dir }}/apiserver.csr -CA {{ master_cert_dir }}/ca.pem -CAkey {{ master_cert_dir }}/ca-key.pem -CAcreateserial -out {{ master_cert_dir }}/apiserver.pem -days 3666 -extensions v3_req -extfile {{ master_cert_dir }}/openssl.conf"
+    - "openssl genrsa -out {{ master_cert_dir }}/kubelet-client-key.pem 2048"
+    - "openssl req -new -key {{ master_cert_dir }}/kubelet-client-key.pem -out {{ master_cert_dir }}/kubelet-client.csr -subj '/CN=kubelet-client/O=system:masters'"
+    - "openssl x509 -req -in {{ master_cert_dir }}/kubelet-client.csr -CA {{ master_cert_dir }}/ca.pem -CAkey {{ master_cert_dir }}/ca-key.pem -CAcreateserial -out {{ master_cert_dir }}/kubelet-client.pem -days 3666"
+    - "openssl genrsa -out {{ master_cert_dir }}/front-proxy-client-key.pem 2048"
+    - "openssl req -new -key {{ master_cert_dir }}/front-proxy-client-key.pem -out {{ master_cert_dir }}/front-proxy-client.csr -subj '/CN=front-proxy-client'"
+    - "openssl x509 -req -in {{ master_cert_dir }}/front-proxy-client.csr -CA {{ master_cert_dir }}/ca.pem -CAkey {{ master_cert_dir }}/ca-key.pem -CAcreateserial -out {{ master_cert_dir }}/front-proxy-client.pem -days 3666"
+    - "openssl genrsa -out {{ master_cert_dir }}/scheduler-key.pem 2048"
+    - "openssl req -new -key {{ master_cert_dir }}/scheduler-key.pem -out {{ master_cert_dir }}/scheduler.csr -subj '/CN=system:kube-scheduler'"
+    - "openssl x509 -req -in {{ master_cert_dir }}/scheduler.csr -CA {{ master_cert_dir }}/ca.pem -CAkey {{ master_cert_dir }}/ca-key.pem -CAcreateserial -out {{ master_cert_dir }}/scheduler.pem -days 3666"
+    - "openssl genrsa -out {{ master_cert_dir }}/controller-key.pem 2048"
+    - "openssl req -new -key {{ master_cert_dir }}/controller-key.pem -out {{ master_cert_dir }}/controller.csr -subj '/CN=system:kube-controller-manager'"
+    - "openssl x509 -req -in {{ master_cert_dir }}/controller.csr -CA {{ master_cert_dir }}/ca.pem -CAkey {{ master_cert_dir }}/ca-key.pem -CAcreateserial -out {{ master_cert_dir }}/controller.pem -days 3666"
+    - "openssl genrsa -out {{ master_cert_dir }}/node-key.pem 2048"
+    - "openssl req -new -key {{ master_cert_dir }}/node-key.pem -out {{ master_cert_dir }}/node.csr -subj '/CN=kube-node/O=system:nodes'"
+    - "openssl x509 -req -in {{ master_cert_dir }}/node.csr -CA {{ master_cert_dir }}/ca.pem -CAkey {{ master_cert_dir }}/ca-key.pem -CAcreateserial -out {{ master_cert_dir }}/node.pem -days 3666"
 
 - name: create etcd certificate
   when: etcd_peer_url_scheme == 'https'
@@ -35,5 +50,5 @@
   with_items:
     - "openssl genrsa -out {{ master_cert_dir }}/etcd-key.pem 2048"
     - "openssl req -new -key {{ master_cert_dir }}/etcd-key.pem -out {{ master_cert_dir }}/etcd.csr -subj '/CN=Etcd-server' -config {{ master_cert_dir }}/openssl-etcd.conf"
-    - "openssl x509 -req -in {{ master_cert_dir }}/etcd.csr -CA {{ master_cert_dir }}/ca.pem -CAkey {{ master_cert_dir }}/ca-key.pem -CAcreateserial -out {{ master_cert_dir }}/etcd.pem -days 1000 -extensions v3_req -extfile {{ master_cert_dir }}/openssl-etcd.conf"
+    - "openssl x509 -req -in {{ master_cert_dir }}/etcd.csr -CA {{ master_cert_dir }}/ca.pem -CAkey {{ master_cert_dir }}/ca-key.pem -CAcreateserial -out {{ master_cert_dir }}/etcd.pem -days 3666 -extensions v3_req -extfile {{ master_cert_dir }}/openssl-etcd.conf"
 

@@ -11,6 +11,18 @@
     - apiserver.pem
     - ca-key.pem
     - ca.pem
+    - controller-key.pem
+    - controller.pem
+    - etcd-key.pem
+    - etcd.pem
+    - front-proxy-client-key.pem
+    - front-proxy-client.pem
+    - kubelet-client-key.pem
+    - kubelet-client.pem
+    - scheduler-key.pem
+    - scheduler.pem
+    - node.pem
+    - node-key.pem
   register: pki_certs
   run_once: true
   delegate_to: "{{ groups['sslhost'][0] }}"

@@ -59,3 +59,9 @@
     name: net.ipv4.ip_forward
     value: 1
 
+- name: disable selinux
+  selinux:
+    state: disabled
+
+- name: disable selinux in file
+  lineinfile: "dest=/etc/selinux/config state=present regexp='^SELINUX=' line='SELINUX=disabled'"

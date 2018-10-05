@@ -12,14 +12,6 @@ defaults
   timeout client 50000ms
   timeout server 50000ms
 
-listen stats
-    bind :{{ haproxy_monitor_port }}
-    mode http
-    balance
-    stats uri /haproxy_stats
-    stats auth {{ haadmin_user }}:{{ haadmin_password }}
-    stats admin if TRUE
-
 frontend api-https
    mode tcp
    bind :443
