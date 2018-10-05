@@ -13,8 +13,8 @@ Before start testing let's talk about the infrastructure behind. Vagrant file co
  
 To run test we have to execute the following commands:
 ```
-git clone https://github.com/mhmxs/HA-kubernetes-ansible.git
-cd HA-kubernetes-ansible
+git clone https://github.com/pawankkamboj/kubernetes-ansible.git
+cd kubernetes-ansible
 cat ~/.ssh/id_rsa.pub > ssh-key.pub
 vagrant up
 for a in 11 12 21 22 99; do ssh 192.168.50.${a} exit; done
