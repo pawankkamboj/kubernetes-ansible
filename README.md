@@ -3,8 +3,8 @@ Ansible playbook to create a Highly Available kubernetes cluster using latest re
 Ansible version "2.4" is require to use this playbook.
 
 Requirements:-
- - Need Ansible
- - CentsOS7 installes system
+ - Ansible
+ - CentOS-7.x
 
 
 Download the Kubernetes-Ansible playbook and set up variable according to need in group variable file
@@ -20,10 +20,10 @@ Ansible roles
 - yum-repo - install epel repo
 - sslcert - create all ssl certificates require to run secure K8S cluster
 - docker - install latest docker release on all cluster nodes
-- containerd - IF want to use containerd runtime instead of Dockerg, use this role and enable this in group variable file
-- etcd - setup etcd cluster, running as container
-- haproxy - setup haproxy for API service HA
-- keepalived - using keepalive for HA of IP address for kube-api server
+- containerd - IF want to use containerd runtime instead of Docker, use this role and enable this in group variable file
+- etcd - setup etcd cluster, running as container on all master nodes
+- haproxy - setup haproxy for API service HA, run on all master nodes
+- keepalived - using keepalive for HA of IP address for kube-api server, run on all master nodes
 - master - setup kubernetes master controller components - kube-apiserver, kube-controller, kube-scheduler, kubectl client
 - node - setup kubernetes node agent - kubelet
 - addon - to create addon service flanneld, kube-proxy, kube-dns, metrics-server
