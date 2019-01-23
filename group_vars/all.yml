@@ -8,13 +8,13 @@ kube_addon_dir: /etc/kubernetes/addon
 flannel_dir: /etc/sysconfig
 
 #- get k8s version
-k8s_version: "v1.11.3"
+k8s_version: "v1.12.4"
 
 #- image and other variable
-api_image: gcr.io/google_containers/kube-apiserver-amd64:v1.11.3
-controller_image: gcr.io/google_containers/kube-controller-manager-amd64:v1.11.3
-scheduler_image: gcr.io/google_containers/kube-scheduler-amd64:v1.11.3
-kube_proxy_image: gcr.io/google_containers/kube-proxy-amd64:v1.11.3
+api_image: gcr.io/google_containers/kube-apiserver-amd64:v1.12.4
+controller_image: gcr.io/google_containers/kube-controller-manager-amd64:v1.12.4
+scheduler_image: gcr.io/google_containers/kube-scheduler-amd64:v1.12.4
+kube_proxy_image: gcr.io/google_containers/kube-proxy-amd64:v1.12.4
 etcd_image: k8s.gcr.io/etcd:3.2.24
 
 #- cluster service ip range
