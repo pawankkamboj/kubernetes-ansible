@@ -41,7 +41,7 @@ keepalived:
 
 #- api secure port and api loadbalancer IP
 api_secure_port: 6443
-api_lb_ip: "https://{{ keepalived.shared_ip }}"		# Should be haproxy host IP or network load balancer IP. If you use only one api server then setup its IP.
+api_url: "https://{{ keepalived.shared_ip }}"		# Should be haproxy host IP or network load balancer IP. If you use only one api server then setup its IP.
 
 #- kubeconfig file 
 kubeadminconfig: /etc/kubernetes/kubeadminconfig

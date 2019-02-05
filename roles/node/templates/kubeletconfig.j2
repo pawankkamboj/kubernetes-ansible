@@ -3,10 +3,10 @@ clusters:
 - name: cluster-ssl
   cluster:
     certificate-authority: {{ ca_cert }}
-    server: {{ api_lb_ip }}
+    server: {{ api_url }}
 - name: cluster-sslskip
   cluster:
-    server: {{ api_lb_ip }}
+    server: {{ api_url }}
     insecure-skip-tls-verify: true
 contexts:
 - context:
