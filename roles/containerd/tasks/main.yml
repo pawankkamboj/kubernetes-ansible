@@ -28,6 +28,7 @@
     src: "{{ containerd_fetch_uri | default('https://github.com/containerd/containerd/releases/download/v' + containerd_release_version + '/containerd-' + containerd_release_version + '.linux-amd64.tar.gz') }}"
     dest: "/"
     remote_src: yes
+    creates: "/bin/containerd"
 
 - name: Create directories for cni config and plugin files
   file:
@@ -42,6 +43,7 @@
     src: "{{ cni_fetch_uri | default('https://github.com/containernetworking/plugins/releases/download/' + cni_version + '/cni-plugins-amd64-' + cni_version + '.tgz') }}"
     dest: "{{ cni_bin_dir }}"
     remote_src: yes
+    creates: "{{ cni_bin_dir }}/flannel"
 
 - name: Create a directory for containerd config
   file:
