@@ -1,0 +1,7 @@
+---
+keepalived_dependencies:
+  - iproute2
+  - psmisc
+
+keepalived_packages:
+  - keepalived
