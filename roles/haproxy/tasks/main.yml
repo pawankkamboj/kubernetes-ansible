@@ -1,21 +1,27 @@
 ---
 - name: Install haproxy packages
-  when: ansible_os_family == "RedHat"
-  yum:
-    name: "{{ item }}"
+  package:
+    name:
+      - haproxy
     state: latest
     update_cache: yes
-  with_items:
-    - haproxy
 
-- name: copy haproxy config file
-  template: src="haproxy.cfg.j2" dest={{ haproxy_dir }}/haproxy.cfg
+- name: Copy haproxy config file
+  template:
+    src: haproxy.cfg.j2
+    dest: "{{ haproxy_dir }}/haproxy.cfg"
   register: ha_config
 
-- name: start and enable haproxy
-  service: name=haproxy enabled=yes state=started daemon_reload=yes
+- name: Start and enable haproxy service
+  service:
+    name: haproxy
+    enabled: yes
+    state: started
+    daemon_reload: yes
   register: haproxy_start
 
 - name: haproxy reload
-  when: ha_config|changed 
-  service: name=haproxy state=restarted
+  service:
+    name: haproxy
+    state: restarted
+  when: ha_config is changed
