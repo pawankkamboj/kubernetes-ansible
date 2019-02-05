@@ -1,0 +1,45 @@
+---
+- name: Create directories for cni config and plugin files
+  file:
+    path: "{{ item }}"
+    state: directory
+  with_items:
+    - "{{ cni_conf_dir }}"
+    - "{{ cni_bin_dir }}"
+
+- name: Get cni binary
+  unarchive:
+    src: "{{ cni_fetch_uri | default('https://github.com/containernetworking/plugins/releases/download/' + cni_version + '/cni-plugins-amd64-' + cni_version + '.tgz') }}"
+    dest: "{{ cni_bin_dir }}"
+    remote_src: yes
+    creates: "{{ cni_bin_dir }}/flannel"
+
+- name: Load br_netfilter kernel module
+  modprobe:
+    name: br_netfilter
+    state: present
+
+- name: Set bridge-nf-call-iptables
+  sysctl:
+    name: net.bridge.bridge-nf-call-iptables
+    value: 1
+    sysctl_file: /etc/sysctl.d/90-kubernetes.conf
+
+- name: Turn IP forwarding on
+  sysctl:
+    name: net.ipv4.ip_forward
+    value: 1
+    sysctl_file: /etc/sysctl.d/90-kubernetes.conf
+
+- name: Disable selinux
+  selinux:
+    state: disabled
+  when: ansible_os_family == "RedHat"
+
+- name: Disable selinux in config file
+  lineinfile:
+    dest: /etc/selinux/config
+    state: present
+    regexp: '^SELINUX='
+    line: 'SELINUX=disabled'
+  when: ansible_os_family == "RedHat"

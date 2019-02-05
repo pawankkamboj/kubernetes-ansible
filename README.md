@@ -19,6 +19,7 @@ ansible-playbook -i inventory cluster.yml
 Ansible roles
 - yum-repo - install epel repo
 - sslcert - create all ssl certificates require to run secure K8S cluster
+- runtime-env - common settings for container runtime environment
 - docker - install latest docker release on all cluster nodes
 - containerd - IF want to use containerd runtime instead of Docker, use this role and enable this in group variable file
 - etcd - setup etcd cluster, running as container on all master nodes

@@ -26,6 +26,7 @@
 # Install container runtime
 - hosts: all
   roles:
+    - { role: runtime-env }
     - { role: docker, when: use_containerd == 'false' }
     - { role: containerd, when: use_containerd == 'true' }
   tags:
