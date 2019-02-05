@@ -1,27 +1,15 @@
 ---
-- name: Install required packages on CentOS
-  yum:
-    name: "{{ item }}"
-    state: latest
-  with_items:
-    - unzip
-    - tar
-    - btrfs-progs
-    - libseccomp
-    - util-linux
-    - socat
-    - libselinux-python
-  when: ansible_os_family == "RedHat"
+- name: Gather OS-specific variables
+  include_vars: "{{ item }}"
+  with_first_found:
+    - "{{ ansible_distribution }}-{{ ansible_distribution_major_version}}.yml"
+    - "{{ ansible_distribution }}.yml"
+  tags: vars
 
-- name: Install required packages on Ubuntu
+- name: Install required packages on {{ ansible_distribution }}
   package:
-    name:
-      - unzip
-      - tar
-      - util-linux
-      - socat
+    name: "{{ containerd_packages }}"
     state: latest
-  when: ansible_distribution == "Ubuntu"
 
 - name: Get Containerd
   unarchive:
