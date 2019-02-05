@@ -107,10 +107,10 @@ spec:
         args:
         - -f
         - /etc/kube-flannel/cni-conf.json
-        - /etc/cni/net.d/10-flannel.conflist
+        - {{ cni_conf_dir }}/10-flannel.conflist
         volumeMounts:
         - name: cni
-          mountPath: /etc/cni/net.d
+          mountPath: {{ cni_conf_dir }}
         - name: flannel-cfg
           mountPath: /etc/kube-flannel/
       containers:
@@ -150,7 +150,7 @@ spec:
             path: /run
         - name: cni
           hostPath:
-            path: /etc/cni/net.d
+            path: {{ cni_conf_dir }}
         - name: flannel-cfg
           configMap:
             name: kube-flannel-cfg
