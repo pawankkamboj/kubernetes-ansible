@@ -12,7 +12,7 @@ vrrp_instance VI_01 {
 
   authentication {
     auth_type {{ keepalived.authtype | default('PASS') }}
-    auth_pass {{ keepalived.password | default('4be37dc3') }}
+    auth_pass {{ keepalived.password | default('k8s@123') }}
   }
 
   unicast_peer {
