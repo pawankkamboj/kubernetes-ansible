@@ -1,6 +1,6 @@
 # kubernetes kubelet config
 
-{% if use_containerd == 'false' -%}
+{% if not containerd.enabled -%}
 KUBELET_ARGS="--kubeconfig={{ kubeadminconfig }} --config=/etc/kubernetes/kubelet.yaml --fail-swap-on=false --runtime-cgroups=/systemd/system.slice --kubelet-cgroups=/systemd/system.slice --cgroup-root=/"
 {% else %}
 KUBELET_ARGS="--kubeconfig={{ kubeadminconfig }} --config=/etc/kubernetes/kubelet.yaml --runtime-cgroups=/system.slice/containerd.service --container-runtime=remote --runtime-request-timeout=15m --container-runtime-endpoint=unix:///run/containerd/containerd.sock --fail-swap-on=false"

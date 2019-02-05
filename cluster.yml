@@ -27,8 +27,8 @@
 - hosts: all
   roles:
     - { role: runtime-env }
-    - { role: docker, when: not use_containerd }
-    - { role: containerd, when: use_containerd }
+    - { role: docker, when: not containerd.enabled }
+    - { role: containerd, when: containerd.enabled }
   tags:
     - runtime
 
