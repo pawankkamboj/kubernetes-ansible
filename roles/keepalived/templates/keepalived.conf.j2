@@ -17,9 +17,13 @@ vrrp_instance VI_{{ groups.masters.index(inventory_hostname) }} {
     auth_pass {{ keepalived.password | default('k8s@123') }}
   }
 
+  unicast_src_ip {{ hostvars[inventory_hostname]['ansible_' + keepalived.interface].ipv4.address }}
+
   unicast_peer {
 {% for host in groups['masters'] %}
-    {{ host }}
+{% if host != inventory_hostname %}
+    {{ hostvars[host]['ansible_' + keepalived.interface].ipv4.address }}
+{% endif %}
 {% if not loop.last -%}{%- endif -%}
 {% endfor %}
   }
