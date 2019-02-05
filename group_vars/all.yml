@@ -108,8 +108,8 @@ etcd_peer_key_file: "/etc/kubernetes/pki/etcd-key.pem"
 yum_proxy: ""
 
 #- use containerd instead of docker
-use_containerd: "false"
-containerd_release_version: 1.1.0-rc.0
+use_containerd: false
+containerd_release_version: 1.2.2
+cni_version: v0.7.4
 cni_bin_dir: /opt/cni/bin/
 cni_conf_dir: /etc/cni/net.d/
-cni_version: v0.7.1
