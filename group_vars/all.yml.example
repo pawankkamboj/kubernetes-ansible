@@ -43,10 +43,6 @@ keepalived:
   authtype: PASS		# 'PASS' (simple password) or 'AH' (IPSEC)
   password: k8s@123		# password for accessing VRRP
 
-#- api secure port and api loadbalancer IP
-api_secure_port: 6443
-api_url: "https://{{ keepalived.shared_ip }}"		# Should be haproxy host IP or network load balancer IP. If you use only one api server then setup its IP.
-
 #- kubeconfig file 
 kubeadminconfig: /etc/kubernetes/kubeadminconfig
 
@@ -84,8 +80,11 @@ haproxy_monitor_port: 9090
 haadmin_user: admin
 haadmin_password: admin123
 
-#- for kube-api server
-bind_interface: eth0
+# kube-api server settings
+kube_api:
+  interface: "{{ ansible_default_ipv4.interface }}"
+  secure_port: 6443
+  url: "https://{{ keepalived.shared_ip }}"             # Should be haproxy host IP or network load balancer IP. If you use only one api server then setup its IP.
 
 #- etcd config
 etcd:

@@ -20,7 +20,7 @@ frontend kube-api-https
 backend kube-api-backend
     mode tcp
 {% for host in groups['masters'] %}
-    server  api{{ loop.index }}  {{ host }}:{{ api_secure_port }}  check
+    server  api{{ loop.index }}  {{ host }}:{{ kube_api.secure_port }}  check
 {% if not loop.last -%}{%- endif -%}
 {% endfor %}
 
