@@ -12,12 +12,12 @@ defaults
   timeout client 50000ms
   timeout server 50000ms
 
-frontend api-https
+frontend kube-api-https
    mode tcp
    bind :443
-   default_backend api-backend
+   default_backend kube-api-backend
 
-backend api-backend
+backend kube-api-backend
     mode tcp
 {% for host in groups['masters'] %}
     server  api{{ loop.index }}  {{ host }}:{{ api_secure_port }}  check
