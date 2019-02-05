@@ -80,14 +80,15 @@ haproxy_monitor_port: 9090
 haadmin_user: admin
 haadmin_password: admin123
 
-#- for etcd 
-etcd_interface: eth0
 #- for kube-api server
 bind_interface: eth0
 
 #- etcd config
-etcd_client_port: 2379
-etcd_peer_port: 2380
+etcd:
+  interface: "{{ ansible_default_ipv4.interface }}"
+  client_port: 2379
+  peer_port: 2380
+
 etcd_peers_group: etcd
 etcd_conf_dir: /etc/etcd
 etcd_initial_cluster_state: new

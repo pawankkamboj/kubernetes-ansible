@@ -1,7 +1,6 @@
-#etcd_interface: "{{ ansible_default_ipv4.interface }}"
-etcd_machine_address: "{{ hostvars[inventory_hostname]['ansible_' + etcd_interface].ipv4.address }}"
-etcd_initial_advertise_peer_urls: "{{ etcd_peer_url_scheme }}://{{ etcd_machine_address }}:{{ etcd_peer_port }}"
-etcd_listen_peer_urls: "{{ etcd_peer_url_scheme }}://0.0.0.0:{{ etcd_peer_port }}"
-etcd_advertise_client_urls: "{{ etcd_peer_url_scheme }}://{{ etcd_machine_address }}:{{ etcd_client_port }}"
-etcd_listen_client_urls: "{{ etcd_peer_url_scheme }}://0.0.0.0:{{ etcd_client_port }}"
+etcd_machine_address: "{{ hostvars[inventory_hostname]['ansible_' + etcd.interface].ipv4.address }}"
+etcd_initial_advertise_peer_urls: "{{ etcd_peer_url_scheme }}://{{ etcd_machine_address }}:{{ etcd.peer_port }}"
+etcd_listen_peer_urls: "{{ etcd_peer_url_scheme }}://0.0.0.0:{{ etcd.peer_port }}"
+etcd_advertise_client_urls: "{{ etcd_peer_url_scheme }}://{{ etcd_machine_address }}:{{ etcd.client_port }}"
+etcd_listen_client_urls: "{{ etcd_peer_url_scheme }}://0.0.0.0:{{ etcd.client_port }}"
 
