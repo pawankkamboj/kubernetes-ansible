@@ -47,8 +47,8 @@
     src: getkube.sh
     dest: /opt/getkube.sh
 
-- name: download k8s binary
-  shell: "sh /opt/getkube.sh {{ k8s_version }} NODE"
+- name: Download k8s binary
+  shell: "bash /opt/getkube.sh {{ k8s_version }} NODE"
   
 - name: Create kubelet directory
   file:
