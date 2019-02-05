@@ -38,6 +38,10 @@ keepalived:
   enabled: true
   interface: "{{ ansible_default_ipv4.interface }}"
   shared_ip: 10.1.0.100
+  vrid: 110
+  adv_interval: 1
+  authtype: PASS
+  password: s0m3pwd
 
 #- api secure port and api loadbalancer IP
 api_secure_port: 6443
@@ -101,11 +105,6 @@ etcd_key_file: "/etc/kubernetes/pki/etcd-key.pem"
 etcd_peer_ca_file: "/etc/kubernetes/pki/ca.pem"
 etcd_peer_cert_file: "/etc/kubernetes/pki/etcd.pem"
 etcd_peer_key_file: "/etc/kubernetes/pki/etcd-key.pem"
-
-#- proxy configuration of yum repositories
-# -> uncomment if running with vagrant
-#yum_proxy: "http://192.168.50.99:3128"
-yum_proxy: ""
 
 #- use containerd instead of docker
 use_containerd: false
