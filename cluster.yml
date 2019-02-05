@@ -42,7 +42,7 @@
 # install keepalived
 - hosts: masters
   roles:
-    - role: keepalived
+    - { role: keepalived, when: keepalived.enabled }
   tags:
     - keepalived
 

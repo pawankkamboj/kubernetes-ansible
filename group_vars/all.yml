@@ -33,13 +33,15 @@ controller_key: /etc/kubernetes/pki/controller-key.pem
 scheduler_cert: /etc/kubernetes/pki/scheduler.pem
 scheduler_key: /etc/kubernetes/pki/scheduler-key.pem
 
+#-use keepalived for api HA if only one master node then set it to false
+keepalived:
+  enabled: true
+  interface: "{{ ansible_default_ipv4.interface }}"
+  shared_ip: 10.1.0.100
+
 #- api secure port and api loadbalancer IP
 api_secure_port: 6443
-api_lb_ip: https://10.1.0.100 # it should be haproxy host IP or network load balancer IP  # if using onle one api server then setup IP of it
-lb_ip: 10.1.0.100
-
-#-use keepalived for api HA if only one master node then set it to false
-keepalived: true
+api_lb_ip: "https://{{ keepalived.shared_ip }}"		# Should be haproxy host IP or network load balancer IP. If you use only one api server then setup its IP.
 
 #- kubeconfig file 
 kubeadminconfig: /etc/kubernetes/kubeadminconfig
@@ -78,9 +80,6 @@ haproxy_monitor_port: 9090
 haadmin_user: admin
 haadmin_password: admin123
 
-#- below require interface name, most system it has eth0, but if there is bonding then it bond, or using vagrant with nat with it is eth1, set accrodingly
-#- for keepalived
-keepalived_shared_iface: eth0
 #- for etcd 
 etcd_interface: eth0
 #- for kube-api server

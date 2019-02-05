@@ -14,7 +14,7 @@ DNS.4 = kubernetes.default.svc.{{ cluster_name }}
 DNS.5 = {{ domain_name }}
 DNS.6 = *.{{ domain_name }}
 IP.1 = {{ kubernetes_service_ip }}
-IP.2 = {{ lb_ip }}
+IP.2 = {{ keepalived.shared_ip }}
 {% set count = 2 %}
 {% for host in groups['masters'] %}
 {% set count1 = count + loop.index %}
