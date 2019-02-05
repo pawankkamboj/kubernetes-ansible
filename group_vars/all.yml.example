@@ -33,15 +33,15 @@ controller_key: /etc/kubernetes/pki/controller-key.pem
 scheduler_cert: /etc/kubernetes/pki/scheduler.pem
 scheduler_key: /etc/kubernetes/pki/scheduler-key.pem
 
-#-use keepalived for api HA if only one master node then set it to false
+# Use keepalived for API HA. If there is only one master node, then set 'enabled' to false.
 keepalived:
   enabled: true
   interface: "{{ ansible_default_ipv4.interface }}"
-  shared_ip: 10.1.0.100
-  vrid: 110
-  adv_interval: 1
-  authtype: PASS
-  password: s0m3pwd
+  shared_ip: 10.1.0.100		# Virtual IP
+  vrid: 110			# Virtual Router ID
+  adv_interval: 1		# VRRP advert interval
+  authtype: PASS		# 'PASS' (simple password) or 'AH' (IPSEC)
+  password: k8s@123		# password for accessing VRRP
 
 #- api secure port and api loadbalancer IP
 api_secure_port: 6443
