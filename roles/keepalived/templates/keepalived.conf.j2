@@ -1,6 +1,6 @@
 vrrp_script check_haproxy {
-	script "pidof haproxy"
-	interval 2
+  script "pidof haproxy"
+  interval 2
 }
 
 vrrp_instance VI_01 {
