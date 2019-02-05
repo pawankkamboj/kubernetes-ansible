@@ -3,12 +3,14 @@ vrrp_script check_haproxy {
   interval 2
 }
 
-vrrp_instance VI_01 {
+vrrp_instance VI_{{ groups.masters.index(inventory_hostname) }} {
+  # Instance with the highest priority will become MASTER,
+  # so the entry here doesn't matter a whole lot.
   state BACKUP
   interface {{ keepalived.interface }}
-  virtual_router_id 100
-  priority 100
-  advert_int 1
+  virtual_router_id {{ keepalived.vrid | default('51') }}
+  priority {{ 100 - 10 * groups.masters.index(inventory_hostname) }}
+  advert_int {{ keepalived.adv_interval }}
 
   authentication {
     auth_type {{ keepalived.authtype | default('PASS') }}
