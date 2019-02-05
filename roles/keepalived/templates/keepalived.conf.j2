@@ -23,7 +23,7 @@ vrrp_instance VI_01 {
   }
 
   virtual_ipaddress {
-    {{ keepalived.shared_ip }} {{ keepalived.interface }} label {{ keepalived.interface }}:vip
+    {{ keepalived.shared_ip }} dev {{ keepalived.interface }} label {{ keepalived.interface }}:vip
   }
 
   track_script {
