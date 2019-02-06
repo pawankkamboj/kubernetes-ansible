@@ -73,12 +73,13 @@ flannel_network: "10.244.0.0/16"
 #-metrics-server
 metrics_server: true
 
-#- setup haproxy for loadbalancing
-haproxy: true  # set false when already physical loadbalancer available
-haproxy_dir: /etc/haproxy
-haproxy_monitor_port: 9090
-haadmin_user: admin
-haadmin_password: admin123
+# Setup haproxy for Kubernetes API loadbalancing
+haproxy:
+  enabled: true                 # Set to false when already physical loadbalancer available
+  config_dir: /etc/haproxy
+  monitor_port: 9090
+  admin_user: admin
+  admin_password: admin123
 
 # kube-api server settings
 kube_api:

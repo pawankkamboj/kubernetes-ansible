@@ -6,11 +6,21 @@ global
 defaults
   log global
   mode http
-  #option httplog
   option dontlognull
   timeout connect 5000ms
   timeout client 50000ms
   timeout server 50000ms
+
+listen stats
+  description Haproxy Statistics
+  bind :{{ haproxy.monitor_port | default('9090') }}
+  mode http
+  stats enable
+  stats uri /
+  stats refresh 5s
+  stats auth {{ haproxy.admin_user }}:{{ haproxy.admin_password }}
+  stats admin if TRUE
+  stats show-node
 
 frontend kube-api-https
    mode tcp

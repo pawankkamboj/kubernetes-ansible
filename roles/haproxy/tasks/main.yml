@@ -9,7 +9,7 @@
 - name: Copy haproxy config file
   template:
     src: haproxy.cfg.j2
-    dest: "{{ haproxy_dir }}/haproxy.cfg"
+    dest: "{{ haproxy.config_dir }}/haproxy.cfg"
   register: ha_config
 
 - name: Start and enable haproxy service
@@ -20,7 +20,7 @@
     daemon_reload: yes
   register: haproxy_start
 
-- name: haproxy reload
+- name: Restat haproxy service after config change
   service:
     name: haproxy
     state: restarted
