@@ -1,31 +1,38 @@
 vrrp_script check_haproxy {
-	script "pidof haproxy"
-	interval 2
+  script "pgrep haproxy"
+  interval 2
 }
 
-vrrp_instance VI_01 {
-	state BACKUP
-	interface {{ keepalived_shared_iface }}
-	virtual_router_id 100
-	priority 100
-	advert_int 1
+vrrp_instance VI_{{ groups.masters.index(inventory_hostname) }} {
+  # Instance with the highest priority will become MASTER,
+  # so the entry here doesn't matter a whole lot.
+  state BACKUP
+  interface {{ keepalived.interface }}
+  virtual_router_id {{ keepalived.vrid | default('51') }}
+  priority {{ 100 - 10 * groups.masters.index(inventory_hostname) }}
+  advert_int {{ keepalived.adv_interval }}
 
-	authentication {
-        	auth_type PASS
-	        auth_pass k8s@123
-        }
-        unicast_peer {
-	{% for host in groups['masters'] %}
-	    {{ host }} 
-        {% if not loop.last -%}{%- endif -%}
-	{% endfor %}
-        }
+  authentication {
+    auth_type {{ keepalived.authtype | default('PASS') }}
+    auth_pass {{ keepalived.password | default('k8s@123') }}
+  }
 
-	virtual_ipaddress {
-		{{ lb_ip }} {{ keepalived_shared_iface }}
-	}
+  unicast_src_ip {{ hostvars[inventory_hostname]['ansible_' + keepalived.interface].ipv4.address }}
 
-	track_script {
-     		check_haproxy
-	}
+  unicast_peer {
+{% for host in groups['masters'] %}
+{% if host != inventory_hostname %}
+    {{ hostvars[host]['ansible_' + keepalived.interface].ipv4.address }}
+{% endif %}
+{% if not loop.last -%}{%- endif -%}
+{% endfor %}
+  }
+
+  virtual_ipaddress {
+    {{ keepalived.shared_ip }} dev {{ keepalived.interface }} label {{ keepalived.interface }}:vip
+  }
+
+  track_script {
+    check_haproxy
+  }
 }

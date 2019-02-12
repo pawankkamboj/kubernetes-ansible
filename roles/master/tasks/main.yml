@@ -1,60 +1,97 @@
 ---
-- name: create kubernetes config directory
-  file: path={{ manifest_config_dir }} state=directory
+- name: Create kubernetes config directory
+  file:
+    path: "{{ manifest_config_dir }}"
+    state: directory
   register: manifest
 
-- name: copy api config file
-  template: src="kube-apiserver.yaml.j2" dest={{ manifest_config_dir }}/kube-apiserver.yaml
+- name: Copy API config file
+  template:
+    src: kube-apiserver.yaml.j2
+    dest: "{{ manifest_config_dir }}/kube-apiserver.yaml"
   register: api
 
-- name: copy controller config file
-  template: src="kube-controller-manager.yaml.j2" dest={{ manifest_config_dir }}/kube-controller-manager.yaml
+- name: Copy controller config file
+  template:
+    src: kube-controller-manager.yaml.j2
+    dest: "{{ manifest_config_dir }}/kube-controller-manager.yaml"
   register: controller
 
-- name: copy scheduler config file
-  template: src="kube-scheduler.yaml.j2" dest={{ manifest_config_dir }}/kube-scheduler.yaml
+- name: Copy scheduler config file
+  template:
+    src: kube-scheduler.yaml.j2
+    dest: "{{ manifest_config_dir }}/kube-scheduler.yaml"
   register: scheduler
 
-- name: copy kube config file
-  template: src="kubeadminconfig.j2" dest={{ kube_config_dir }}/kubeadminconfig
+- name: Copy kubeadm config file
+  template:
+    src: kubeadminconfig.j2
+    dest: "{{ kube_config_dir }}/kubeadminconfig"
   register: config
 
-- name: copy kubeconfig file to use with command line tool kubectl 
-  template: src="kubeconfig.j2" dest={{ kube_config_dir }}/kubeconfig
+- name: Copy kubeconfig file to use with command line tool kubectl
+  template:
+    src: kubeconfig.j2
+    dest: "{{ kube_config_dir }}/kubeconfig"
 
-- name: copy kubelet-config file
-  template: src="kubelet.j2" dest={{ kube_config_dir }}/kubelet
+- name: Copy kubelet-config file
+  template:
+    src: kubelet.j2
+    dest: "{{ kube_config_dir }}/kubelet"
   register: kubelet_conf
 
-- name: copy kubelet-service file
-  template: src="kubelet.service.j2" dest=/etc/systemd/system/kubelet.service owner=root group=root mode=0644
+- name: Copy kubelet-service file
+  template:
+    src: kubelet.service.j2
+    dest: /etc/systemd/system/kubelet.service
+    owner: root
+    group: root
+    mode: 0644
   register: kubelet_service
 
-- name: copy kubelet.yaml 
-  template: src=kubelet.yaml.j2 dest={{ kube_config_dir }}/kubelet.yaml
+- name: Copy kubelet.yaml
+  template:
+    src: kubelet.yaml.j2
+    dest: "{{ kube_config_dir }}/kubelet.yaml"
 
-- name: copy kubelet.conf
-  template: src=kubelet.conf.j2 dest={{ kube_config_dir }}/kubelet.conf
+- name: Copy kubelet.conf
+  template:
+    src: kubelet.conf.j2
+    dest: "{{ kube_config_dir }}/kubelet.conf"
   
-- name: copy controller-manager.conf
-  template: src=controller-manager.conf.j2 dest={{ kube_config_dir }}/controller-manager.conf
+- name: Copy controller-manager.conf
+  template:
+    src: controller-manager.conf.j2
+    dest: "{{ kube_config_dir }}/controller-manager.conf"
 
-- name: copy scheduler.conf.j2
-  template: src=scheduler.conf.j2 dest={{ kube_config_dir }}/scheduler.conf
+- name: Copy scheduler.conf.j2
+  template:
+    src: scheduler.conf.j2
+    dest: "{{ kube_config_dir }}/scheduler.conf"
 
-- name: copy kubectl binary and kubelet binary download script
-  copy: src=getkube.sh dest=/opt/getkube.sh
+- name: Copy kubectl binary and kubelet binary download script
+  copy:
+    src: getkube.sh
+    dest: /opt/getkube.sh
 
-- name: download k8s binary
-  shell: "sh /opt/getkube.sh {{ k8s_version }} BOTH"
+- name: Download k8s binary
+  shell: "bash /opt/getkube.sh {{ k8s_version }} BOTH"
 
-- name: create kubelet directory
-  file: path=/var/lib/kubelet state=directory
+- name: Create kubelet directory
+  file:
+    path: /var/lib/kubelet
+    state: directory
   
-- name: start and enable kubelet
-  service: name=kubelet enabled=yes state=started daemon_reload=yes
+- name: Start and enable kubelet service
+  service:
+    name: kubelet
+    enabled: yes
+    state: started
+    daemon_reload: yes
   register: kubelet_start
 
-- name: reload kubelet
-  when: openssl_cert|changed or kubelet_service|changed or kubelet_conf|changed
-  service: name=kubelet state=restarted
+- name: Restart kubelet after config changes
+  service:
+    name: kubelet
+    state: restarted
+  when: openssl_cert is changed or kubelet_service is changed or kubelet_conf is changed

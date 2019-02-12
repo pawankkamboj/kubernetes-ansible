@@ -1,57 +1,43 @@
 ---
-- name: Install Docker dependency
-  when: ansible_os_family == "RedHat"
-  yum:
-    name: "{{ item }}"
+- name: Gather OS-specific variables
+  include_vars: "{{ item }}"
+  with_first_found:
+    - "{{ ansible_distribution }}-{{ ansible_distribution_major_version}}.yml"
+    - "{{ ansible_distribution }}.yml"
+  tags: vars
+
+- name: Install Docker dependencies on {{ ansible_distribution }}
+  package:
+    name: "{{ docker_dependencies }}"
     state: latest
     update_cache: yes
-  with_items:
-    - yum-utils
-    - lvm2
-    - device-mapper-persistent-data
 
-- name: install docker repo
-  command: "yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo"
+- name: Install Docker repo on CentOS
+  command: "yum-config-manager --add-repo {{ docker_repo | default('https://download.docker.com/linux/centos/docker-ce.repo') }}"
+  when: ansible_distribution == "CentOS"
 
-- name: Install Docker
-  when: ansible_os_family == "RedHat"
-  yum:
-    name: "{{ item }}"
+- name: Add Docker repo apt signing key on Ubuntu
+  apt_key:
+    url: "{{ docker_repo_key | default('https://download.docker.com/linux/ubuntu/gpg') }}"
+    state: present
+  when: ansible_distribution == "Ubuntu"
+
+- name: Install Docker repo on Ubuntu
+  apt_repository:
+    repo: "{{ docker_repo | default('deb [arch=amd64] https://download.docker.com/linux/ubuntu ' + ansible_distribution_release + ' stable') }}"
+    state: present
+    filename: docker-ce
+  when: ansible_distribution == "Ubuntu"
+
+- name: Install Docker on {{ ansible_distribution }}
+  package:
+    name: "{{ docker_packages }}"
     state: latest
     update_cache: yes
-  with_items:
-    - docker-ce
 
 - name: Start Docker Daemon
-  service: name=docker enabled=no state=started daemon_reload=yes
-
-- name: "Load br_netfilter kernel module"
-  modprobe:
-    name: br_netfilter
-    state: present
-
-- name: "Set bridge-nf-call-iptables"
-  sysctl:
-    name: net.bridge.bridge-nf-call-iptables
-    value: 1
-
-- name: "Set ip_forward"
-  sysctl:
-    name: net.ipv4.ip_forward
-    value: 1
-
-- name: "Create a directory for cni plugin"
-  file: path={{ cni_bin_dir }} state=directory
-
-- name: "Get cni binary"
-  unarchive:
-    src: "https://github.com/containernetworking/plugins/releases/download/{{ cni_version }}/cni-plugins-amd64-{{ cni_version }}.tgz"
-    dest: "{{ cni_bin_dir }}"
-    remote_src: yes
-
-- name: disable selinux
-  selinux:
-    state: disabled
-
-- name: disable selinux in file
-  lineinfile: "dest=/etc/selinux/config state=present regexp='^SELINUX=' line='SELINUX=disabled'"
+  service:
+    name: docker
+    enabled: no
+    state: started
+    daemon_reload: yes

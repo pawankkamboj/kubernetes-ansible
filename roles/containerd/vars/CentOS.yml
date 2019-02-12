@@ -1,0 +1,9 @@
+---
+containerd_packages:
+  - unzip
+  - tar
+  - btrfs-progs
+  - libseccomp
+  - util-linux
+  - socat
+  - libselinux-python

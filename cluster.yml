@@ -4,54 +4,58 @@
 # Install yum-repo
 - hosts: all
   roles:
-    - yum-repo
+    - role: yum-repo
+      when: ansible_os_family == "RedHat"
   tags:
     - yum-repo
 
 # Install sslcert
 - hosts: sslhost
   roles:
-    - sslcert 
+    - role: sslcert 
   tags:
     - sslcert
 
 # Install etcd
 - hosts: etcd
   roles:
-    - etcd
+    - role: etcd
   tags:
     - etcd
 
 # Install container runtime
 - hosts: all
   roles:
-    - { role: docker, when: use_containerd == 'false' }
-    - { role: containerd, when: use_containerd == 'true' }
+    - { role: runtime-env }
+    - { role: docker, when: not containerd.enabled }
+    - { role: containerd, when: containerd.enabled }
+  tags:
+    - runtime
 
 # install haproxy
 - hosts: masters
   roles:
-    - haproxy
+    - role: haproxy
   tags:
     - haproxy
 
 # install keepalived
 - hosts: masters
   roles:
-    - keepalived
+    - { role: keepalived, when: keepalived.enabled }
   tags:
     - keepalived
 
 # install kubernetes master services
 - hosts: masters
   roles:
-    - master
+    - role: master
   tags:
     - master
 
 # install kubernetes on the nodes
 - hosts: node
   roles:
-    - node
+    - role: node
   tags:
     - node

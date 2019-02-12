@@ -1,0 +1,12 @@
+---
+keepalived_dependencies:
+  - iproute
+  - kmod
+  - psmisc
+  - nmap-ncat
+  - ipset
+  - ipset-libs
+  - ipvsadm
+
+keepalived_packages:
+  - keepalived

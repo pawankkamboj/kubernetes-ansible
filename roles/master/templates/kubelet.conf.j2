@@ -2,12 +2,12 @@ apiVersion: v1
 clusters:
 - name: cluster-sslskip
   cluster:
-    server: {{ api_lb_ip }}
+    server: {{ kube_api.url }}
     insecure-skip-tls-verify: true
 - name: cluster-ssl
   cluster:
     certificate-authority: {{ ca_cert }}
-    server: {{ api_lb_ip }}
+    server: {{ kube_api.url }}
 contexts:
 - context:
     cluster: cluster-ssl

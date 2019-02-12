@@ -19,8 +19,8 @@ spec:
   - command:
     - kube-apiserver
     - --authorization-mode=Node,RBAC
-    - --advertise-address={{ hostvars[inventory_hostname]['ansible_' + bind_interface].ipv4.address }}
-    - --bind-address={{ hostvars[inventory_hostname]['ansible_' + bind_interface].ipv4.address }}
+    - --advertise-address={{ hostvars[inventory_hostname]['ansible_' + kube_api.interface].ipv4.address }}
+    - --bind-address={{ hostvars[inventory_hostname]['ansible_' + kube_api.interface].ipv4.address }}
     - --allow-privileged=true
     - --client-ca-file=/etc/kubernetes/pki/ca.pem
     - --enable-admission-plugins=NodeRestriction
@@ -40,7 +40,7 @@ spec:
     - --requestheader-extra-headers-prefix=X-Remote-Extra-
     - --requestheader-group-headers=X-Remote-Group
     - --requestheader-username-headers=X-Remote-User
-    - --secure-port={{ api_secure_port }}
+    - --secure-port={{ kube_api.secure_port }}
     - --service-account-key-file=/etc/kubernetes/pki/apiserver-key.pem
     - --service-cluster-ip-range={{ service_ip_range }}
     - --tls-cert-file=/etc/kubernetes/pki/apiserver.pem
@@ -50,9 +50,9 @@ spec:
     livenessProbe:
       failureThreshold: 8
       httpGet:
-        host: {{ hostvars[inventory_hostname]['ansible_' + bind_interface].ipv4.address }}
+        host: {{ hostvars[inventory_hostname]['ansible_' + kube_api.interface].ipv4.address }}
         path: /healthz
-        port: {{ api_secure_port }}
+        port: {{ kube_api.secure_port }}
         scheme: HTTPS
       initialDelaySeconds: 15
       timeoutSeconds: 15

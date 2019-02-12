@@ -1,29 +1,38 @@
 ---
-- name: Install keepalived packages
-  when: ansible_os_family == "RedHat"
-  yum:
-    name: "{{ item }}"
+- name: Gather OS-specific variables
+  include_vars: "{{ item }}"
+  with_first_found:
+    - "{{ ansible_distribution }}-{{ ansible_distribution_major_version}}.yml"
+    - "{{ ansible_distribution }}.yml"
+  tags: vars
+
+- name: Install keepalived dependencies on {{ ansible_distribution }}
+  package:
+    name: "{{ keepalived_dependencies }}"
     state: latest
     update_cache: yes
-  with_items:
-    - iproute 
-    - kmod 
-    - psmisc 
-    - nmap-ncat 
-    - ipset 
-    - ipset-libs
-    - keepalived 
-    - ipvsadm
 
-- name: copy keepalived config file 
-  template: src="keepalived.conf.j2" dest=/etc/keepalived/keepalived.conf 
+- name: Install keepalived on {{ ansible_distribution }}
+  package:
+    name: "{{ keepalived_packages }}"
+    state: latest
+    update_cache: yes
+
+- name: Setup keepalived config file
+  template:
+    src: keepalived.conf.j2
+    dest: /etc/keepalived/keepalived.conf
   register: config
 
-- name: start and enable keepalived
-  service: name=keepalived enabled=yes state=started daemon_reload=yes
-  register: keepalived_start
+- name: Start and enable keepalived service
+  service:
+    name: keepalived
+    enabled: yes
+    state: started
+    daemon_reload: yes
 
-- name: keepalived reload
-  when: config|changed 
-  service: name=keepalived state=restarted
-
+- name: Restart keepalived in case of config change
+  service:
+    name: keepalived
+    state: restarted
+  when: config is changed
