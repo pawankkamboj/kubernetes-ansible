@@ -16,7 +16,6 @@
     src: "{{ containerd_fetch_uri | default('https://github.com/containerd/containerd/releases/download/v' + containerd.release_version + '/containerd-' + containerd.release_version + '.linux-amd64.tar.gz') }}"
     dest: "/"
     remote_src: yes
-    creates: "/bin/containerd"
 
 - name: Create a directory for containerd config
   file:
