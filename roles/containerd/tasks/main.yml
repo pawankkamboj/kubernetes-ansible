@@ -14,7 +14,7 @@
 - name: Get Containerd
   unarchive:
     src: "{{ containerd_fetch_uri | default('https://github.com/containerd/containerd/releases/download/v' + containerd.release_version + '/containerd-' + containerd.release_version + '.linux-amd64.tar.gz') }}"
-    dest: "/"
+    dest: "/usr/local/"
     remote_src: yes
 
 - name: Create a directory for containerd config
