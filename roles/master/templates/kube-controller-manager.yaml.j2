@@ -15,17 +15,17 @@ spec:
     - kube-controller-manager
     - --address=127.0.0.1
     - --allocate-node-cidrs=true
-    #- --authentication-kubeconfig=/etc/kubernetes/controller-manager.conf
-    #- --authorization-kubeconfig=/etc/kubernetes/controller-manager.conf
-    #- --client-ca-file=/etc/kubernetes/pki/ca.pem
+    - --authentication-kubeconfig=/etc/kubernetes/controller-manager.conf
+    - --authorization-kubeconfig=/etc/kubernetes/controller-manager.conf
+    - --client-ca-file=/etc/kubernetes/pki/ca.pem
     - --cluster-cidr={{ flannel_network }}
     - --cluster-signing-cert-file=/etc/kubernetes/pki/ca.pem
     - --cluster-signing-key-file=/etc/kubernetes/pki/ca-key.pem
-    #- --controllers=*,bootstrapsigner,tokencleaner
+    - --controllers=*,bootstrapsigner,tokencleaner
     - --kubeconfig=/etc/kubernetes/controller-manager.conf
     - --leader-elect=true
     - --node-cidr-mask-size=24
-    #- --requestheader-client-ca-file=/etc/kubernetes/pki/ca.pem
+    - --requestheader-client-ca-file=/etc/kubernetes/pki/ca.pem
     - --root-ca-file=/etc/kubernetes/pki/ca.pem
     - --service-account-private-key-file=/etc/kubernetes/pki/apiserver-key.pem
     - --use-service-account-credentials=true
@@ -54,8 +54,6 @@ spec:
     - mountPath: /etc/kubernetes/controller-manager.conf
       name: kubeconfig
       readOnly: true
-    - mountPath: /usr/libexec/kubernetes/kubelet-plugins/volume/exec
-      name: flexvolume-dir
     - mountPath: /etc/pki
       name: etc-pki
       readOnly: true
@@ -66,10 +64,6 @@ spec:
       path: /etc/kubernetes/controller-manager.conf
       type: FileOrCreate
     name: kubeconfig
-  - hostPath:
-      path: /usr/libexec/kubernetes/kubelet-plugins/volume/exec
-      type: DirectoryOrCreate
-    name: flexvolume-dir
   - hostPath:
       path: /etc/pki
       type: DirectoryOrCreate
