@@ -11,10 +11,10 @@ flannel_dir: /etc/sysconfig
 k8s_version: "v1.13.4"
 
 #- image and other variable
-api_image: gcr.io/google_containers/kube-apiserver-amd64:v1.13.4
-controller_image: gcr.io/google_containers/kube-controller-manager-amd64:v1.13.4
-scheduler_image: gcr.io/google_containers/kube-scheduler-amd64:v1.13.4
-kube_proxy_image: gcr.io/google_containers/kube-proxy-amd64:v1.13.4
+api_image: gcr.io/google_containers/kube-apiserver-amd64:{{ k8s_version }}
+controller_image: gcr.io/google_containers/kube-controller-manager-amd64:{{ k8s_version }}
+scheduler_image: gcr.io/google_containers/kube-scheduler-amd64:{{ k8s_version }}
+kube_proxy_image: gcr.io/google_containers/kube-proxy-amd64:{{ k8s_version }}
 etcd_image: k8s.gcr.io/etcd:3.3.10
 
 #- cluster service ip range
