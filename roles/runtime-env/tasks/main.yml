@@ -31,6 +31,13 @@
     value: 1
     sysctl_file: /etc/sysctl.d/90-kubernetes.conf
 
+- name: Set Nonlocal Bind for haproxy
+  when: haproxy.enabled
+  sysctl:
+    name: net.ipv4.ip_nonlocal_bind
+    value: 1
+    sysctl_file: /etc/sysctl.d/90-kubernetes.conf
+
 - name: Disable selinux
   selinux:
     state: disabled
