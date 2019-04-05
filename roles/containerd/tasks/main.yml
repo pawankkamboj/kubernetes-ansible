@@ -11,12 +11,12 @@
     name: "{{ containerd_packages }}"
     state: latest
 
-- name: "Get Containerd"
+- name: Get Containerd
   unarchive:
-    src: "https://storage.googleapis.com/cri-containerd-release/cri-containerd-{{ containerd.release_version }}.linux-amd64.tar.gz"
+    src: "{{ containerd_fetch_uri | default('https://storage.googleapis.com/cri-containerd-release/cri-containerd-' + containerd.release_version + '.linux-amd64.tar.gz') }}"
     dest: "/"
     remote_src: yes
-
+    
 - name: Create a directory for containerd config
   file:
     path: /etc/containerd
