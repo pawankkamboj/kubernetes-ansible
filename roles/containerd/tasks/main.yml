@@ -11,10 +11,10 @@
     name: "{{ containerd_packages }}"
     state: latest
 
-- name: Get Containerd
+- name: "Get Containerd"
   unarchive:
-    src: "{{ containerd_fetch_uri | default('https://github.com/containerd/containerd/releases/download/v' + containerd.release_version + '/containerd-' + containerd.release_version + '.linux-amd64.tar.gz') }}"
-    dest: "/usr/local/"
+    src: "https://storage.googleapis.com/cri-containerd-release/cri-containerd-{{ containerd_release_version }}.linux-amd64.tar.gz"
+    dest: "/"
     remote_src: yes
 
 - name: Create a directory for containerd config
@@ -27,13 +27,11 @@
     path: /etc/containerd/config.toml
     create: yes
     block: |
-      [plugins.cri]
-         enable_tls_streaming = true
-
-- name: Copy containerd systemd unit file
-  copy:
-    src: containerd.service
-    dest: /lib/systemd/system
+      root = "/var/lib/containerd"
+      state = "/run/containerd"
+      oom_score = -999
+      disabled_plugins = ["restart"]
+      subreaper = true
 
 - name: Start containerd service
   systemd:
