@@ -109,7 +109,7 @@ etcd_peer_key_file: "/etc/kubernetes/pki/etcd-key.pem"
 #- use containerd instead of docker
 containerd:
   enabled: false
-  release_version: 1.2.2
+  release_version: 1.2.4
 
 cni_version: v0.7.4
 cni_bin_dir: /opt/cni/bin/
