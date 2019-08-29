@@ -99,23 +99,23 @@ metadata:
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: metrics-server-v0.3.1
+  name: metrics-server-v0.3.3
   namespace: kube-system
   labels:
     k8s-app: metrics-server
     kubernetes.io/cluster-service: "true"
-    version: v0.3.1
+    version: v0.3.3
 spec:
   selector:
     matchLabels:
       k8s-app: metrics-server
-      version: v0.3.1
+      version: v0.3.3
   template:
     metadata:
       name: metrics-server
       labels:
         k8s-app: metrics-server
-        version: v0.3.1
+        version: v0.3.3
       annotations:
         scheduler.alpha.kubernetes.io/critical-pod: ''
         seccomp.security.alpha.kubernetes.io/pod: 'docker/default'
@@ -123,7 +123,7 @@ spec:
       serviceAccountName: metrics-server
       containers:
       - name: metrics-server
-        image: k8s.gcr.io/metrics-server-amd64:v0.3.1
+        image: k8s.gcr.io/metrics-server-amd64:v0.3.3
         command:
         - /metrics-server
         - --metric-resolution=30s
