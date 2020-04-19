@@ -1,5 +1,5 @@
 # kubernetes-ansible
-Ansible playbook to create a Highly Available kubernetes cluster using latest release (1.13.4) on
+Ansible playbook to create a Highly Available kubernetes cluster using release (1.16.9) on
 Bare metal system (have been tested on CentOS 7, Ubuntu 18.04).
 
 Requirements:
