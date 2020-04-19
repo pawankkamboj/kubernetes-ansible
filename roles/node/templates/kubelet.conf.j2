@@ -11,16 +11,16 @@ clusters:
 contexts:
 - context:
     cluster: cluster-ssl
-    user: admin_ssl
-  name: admin@cluster-ssl
+    user: node_ssl
+  name: node@cluster-ssl
 - context:
     cluster: cluster-sslskip
-    user: admin_ssl
-  name: admin@cluster-sslskip
-current-context: admin@cluster-ssl
+    user: node_ssl
+  name: node@cluster-sslskip
+current-context: node@cluster-ssl
 kind: Config
 users:
-- name: admin_ssl
+- name: node_ssl
   user:
-    client-certificate: {{ node_cert }}
-    client-key: {{ node_key }}
+    client-certificate: {{ cert_dir }}/node-{{ ansible_hostname }}.pem
+    client-key: {{ cert_dir }}/node-{{ ansible_hostname }}-key.pem

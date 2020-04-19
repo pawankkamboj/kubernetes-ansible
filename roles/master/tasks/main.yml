@@ -40,6 +40,16 @@
     dest: "{{ kube_config_dir }}/kubelet"
   register: kubelet_conf
 
+- name: copy openssl conf file to create certificate
+  template: src="openssl.conf.j2" dest={{ cert_dir }}/openssl.conf
+
+- name: create node certificate
+  command: "{{ item }}"
+  with_items:
+    - "openssl genrsa -out {{ cert_dir }}/node-{{ ansible_hostname }}-key.pem 2048"
+    - "openssl req -new -key {{ cert_dir }}/node-{{ ansible_hostname }}-key.pem -out {{ cert_dir }}/node-{{ ansible_hostname }}.csr -subj '/CN=system:node:{{ ansible_hostname }}/O=system:nodes'"
+    - "openssl x509 -req -in {{ cert_dir }}/node-{{ ansible_hostname }}.csr -CA {{ cert_dir }}/ca.pem -CAkey {{ cert_dir }}/ca-key.pem -CAcreateserial -out {{ cert_dir }}/node-{{ ansible_hostname }}.pem -days 3666 -extfile {{ cert_dir }}/openssl.conf"
+
 - name: Copy kubelet-service file
   template:
     src: kubelet.service.j2
