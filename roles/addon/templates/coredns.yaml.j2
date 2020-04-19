@@ -5,7 +5,7 @@ metadata:
   name: coredns
   namespace: kube-system
 ---
-apiVersion: rbac.authorization.k8s.io/v1beta1
+apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
   labels:
@@ -29,7 +29,7 @@ rules:
   verbs:
   - get
 ---
-apiVersion: rbac.authorization.k8s.io/v1beta1
+apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
   annotations:
@@ -55,21 +55,24 @@ data:
   Corefile: |
     .:53 {
         errors
-        health
-        kubernetes {{ cluster_name }} {{ flannel_network }} {
+        health {
+            lameduck 5s
+        }
+        ready
+        kubernetes {{ cluster_name }} in-addr.arpa ip6.arpa {
            pods insecure
-           upstream 
+           fallthrough in-addr.arpa ip6.arpa
+           ttl 30
         }
         prometheus :9153
         forward . /etc/resolv.conf 
-        cache 300
-        reload 60s
-        log . {
-          class error
-        }
+        cache 30
+        loop
+        reload
+        loadbalance
     }
 ---
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: coredns
@@ -93,12 +96,13 @@ spec:
         k8s-app: coredns
     spec:
       serviceAccountName: coredns
+      priorityClassName: system-cluster-critical
       tolerations:
         - key: "CriticalAddonsOnly"
           operator: "Exists"
       containers:
       - name: coredns
-        image: k8s.gcr.io/coredns:1.6.2
+        image: k8s.gcr.io/coredns:1.6.7
         imagePullPolicy: IfNotPresent
         args: [ "-conf", "/etc/coredns/Corefile" ]
         volumeMounts:
@@ -132,18 +136,14 @@ spec:
             port: 8080
             scheme: HTTP
           initialDelaySeconds: 60
-          timeoutSeconds: 6
+          timeoutSeconds: 5
           successThreshold: 1
-          failureThreshold: 3
+          failureThreshold: 5
         readinessProbe:
           httpGet:
-            path: /health
-            port: 8080
+            path: /ready
+            port: 8181
             scheme: HTTP
-          initialDelaySeconds: 30
-          timeoutSeconds: 6
-          successThreshold: 1
-          failureThreshold: 3
       dnsPolicy: Default
       volumes:
         - name: config-volume
@@ -173,6 +173,9 @@ spec:
     port: 53
     protocol: TCP
     targetPort: 53
+  - name: metrics
+    port: 9153
+    protocol: TCP
   selector:
     k8s-app: coredns
   type: ClusterIP

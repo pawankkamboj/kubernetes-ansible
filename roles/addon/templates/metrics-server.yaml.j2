@@ -48,7 +48,7 @@ rules:
   - list
   - watch
 - apiGroups:
-  - "extensions"
+  - "apps"
   resources:
   - deployments
   verbs:
@@ -72,7 +72,7 @@ subjects:
   name: metrics-server
   namespace: kube-system
 ---
-apiVersion: apiregistration.k8s.io/v1beta1
+apiVersion: apiregistration.k8s.io/v1
 kind: APIService
 metadata:
   name: v1beta1.metrics.k8s.io
@@ -96,34 +96,34 @@ metadata:
   labels:
     kubernetes.io/cluster-service: "true"
 ---
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: metrics-server-v0.3.3
+  name: metrics-server-v0.3.6
   namespace: kube-system
   labels:
     k8s-app: metrics-server
     kubernetes.io/cluster-service: "true"
-    version: v0.3.3
+    version: v0.3.6
 spec:
   selector:
     matchLabels:
       k8s-app: metrics-server
-      version: v0.3.3
+      version: v0.3.6
   template:
     metadata:
       name: metrics-server
       labels:
         k8s-app: metrics-server
-        version: v0.3.3
+        version: v0.3.6
       annotations:
-        scheduler.alpha.kubernetes.io/critical-pod: ''
         seccomp.security.alpha.kubernetes.io/pod: 'docker/default'
     spec:
       serviceAccountName: metrics-server
+      priorityClassName: system-cluster-critical
       containers:
       - name: metrics-server
-        image: k8s.gcr.io/metrics-server-amd64:v0.3.3
+        image: k8s.gcr.io/metrics-server-amd64:v0.3.6
         command:
         - /metrics-server
         - --metric-resolution=30s
@@ -131,6 +131,7 @@ spec:
         # Remove these lines for non-GKE clusters, and when GKE supports token-based auth.
         - --kubelet-port=10255
         - --deprecated-kubelet-completely-insecure=true
+        - --kubelet-preferred-address-types=InternalIP,Hostname,InternalDNS,ExternalDNS,ExternalIP
         ports:
         - containerPort: 443
           name: https
