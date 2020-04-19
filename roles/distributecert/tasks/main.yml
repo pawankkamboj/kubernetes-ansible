@@ -24,8 +24,6 @@
     - kubelet-client.pem
     - scheduler-key.pem
     - scheduler.pem
-    - node.pem
-    - node-key.pem
   register: pki_certs
   run_once: true
   delegate_to: "{{ groups['sslhost'][0] }}"

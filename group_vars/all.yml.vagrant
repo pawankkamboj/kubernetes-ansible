@@ -1,0 +1,122 @@
+#- setup variable for cluster installation
+#- kubernetes dir
+kube_config_dir: /etc/kubernetes
+manifest_config_dir: /etc/kubernetes/manifests
+cert_dir: /etc/kubernetes/pki
+master_cert_dir: /opt/kubernetes/pki
+kube_addon_dir: /etc/kubernetes/addon
+flannel_dir: /etc/sysconfig
+
+#- get k8s version
+k8s_version: "v1.16.9"
+
+#- image and other variable
+api_image: gcr.io/google_containers/kube-apiserver-amd64:{{ k8s_version }}
+controller_image: gcr.io/google_containers/kube-controller-manager-amd64:{{ k8s_version }}
+scheduler_image: gcr.io/google_containers/kube-scheduler-amd64:{{ k8s_version }}
+kube_proxy_image: gcr.io/google_containers/kube-proxy-amd64:{{ k8s_version }}
+etcd_image: k8s.gcr.io/etcd:3.3.20
+
+#- cluster service ip range
+service_ip_range: 10.96.0.0/24
+kubernetes_service_ip: 10.96.0.1  #- IP of default kubernetes service, it is the first IP of network CIDR range
+
+#- all certifactes for cluster  
+ca_cert: /etc/kubernetes/pki/ca.pem
+ca_key: /etc/kubernetes/pki/ca-key.pem
+admin_key: /etc/kubernetes/pki/admin-key.pem
+admin_cert: /etc/kubernetes/pki/admin.pem
+node_cert: /etc/kubernetes/pki/node.pem
+node_key: /etc/kubernetes/pki/node-key.pem
+controller_cert: /etc/kubernetes/pki/controller.pem
+controller_key: /etc/kubernetes/pki/controller-key.pem
+scheduler_cert: /etc/kubernetes/pki/scheduler.pem
+scheduler_key: /etc/kubernetes/pki/scheduler-key.pem
+
+# Use keepalived for API HA. If there is only one master node, then set 'enabled' to false.
+keepalived:
+  enabled: true
+  interface: eth1
+  shared_ip: 192.168.50.100     # Virtual IP
+  vrid: 110                     # Virtual Router ID
+  adv_interval: 1               # VRRP advert interval
+  authtype: PASS                # 'PASS' (simple password) or 'AH' (IPSEC)
+  password: k8s@123             # password for accessing VRRP
+
+#- kubeconfig file 
+kubeadminconfig: /etc/kubernetes/kubeadminconfig
+
+# all master fqdn name - it require to create ssl certificate
+# set it to only available api server
+masters_fqdn: ['tkube1.test.com', 'tkube2.test.com', 'tkube3.test.com']
+domain_name: test.com #- use to create wildcard ssl certificate for api and etcd
+
+#- cluster dns name and IP
+cluster_name: cluster.local
+
+#- api authorization RBAC
+auth_mode: Node,RBAC
+
+# kube-proxy addon
+kube_proxy: true # set true only if cluster is fully operation and running
+
+#- kube-dns add-on
+kube_dns: true # set true only if cluster is fully operation and running
+#- if true then set following
+dns_ip: 10.96.0.10 # it should be from cluster service_ip_range
+dns_replicas: 1
+
+#flannel network # only one network plugin should be enable either weave or flannel
+flannel: true
+flannel_network: "10.244.0.0/16"
+
+#-metrics-server
+metrics_server: true
+
+# Setup haproxy for Kubernetes API loadbalancing
+haproxy:
+  enabled: true                 # Set to false when already physical loadbalancer available
+  config_dir: /etc/haproxy
+  monitor_port: 9090
+  admin_user: admin
+  admin_password: admin123
+
+# kube-api server settings
+kube_api:
+  interface: eth1
+  secure_port: 6443
+  url: "https://{{ keepalived.shared_ip }}"             # Should be haproxy host IP or network load balancer IP. If you use only one api server then setup its IP.
+
+#- node interface
+node_interface: eth1
+
+#- etcd config
+etcd:
+  interface: eth1
+  client_port: 2379
+  peer_port: 2380
+
+etcd_peers_group: etcd
+etcd_conf_dir: /etc/etcd
+etcd_initial_cluster_state: new
+etcd_initial_cluster_token: etcd-k8-cluster
+etcd_data_dir: /var/lib/etcd
+etcd_peer_url_scheme: https
+etcd_ca_file: "/etc/kubernetes/pki/ca.pem"
+etcd_cert_file: "/etc/kubernetes/pki/etcd.pem"
+etcd_key_file: "/etc/kubernetes/pki/etcd-key.pem"
+etcd_peer_ca_file: "/etc/kubernetes/pki/ca.pem"
+etcd_peer_cert_file: "/etc/kubernetes/pki/etcd.pem"
+etcd_peer_key_file: "/etc/kubernetes/pki/etcd-key.pem"
+
+#- use containerd instead of docker
+containerd:
+  enabled: false
+  release_version: 1.2.4
+
+cni_version: v0.7.4
+cni_bin_dir: /opt/cni/bin/
+cni_conf_dir: /etc/cni/net.d/
+
+# yum proxy for vagrant
+yum_proxy: "http://192.168.50.99:3128"
