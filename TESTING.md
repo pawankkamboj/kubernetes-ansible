@@ -17,7 +17,7 @@ git clone https://github.com/pawankkamboj/kubernetes-ansible.git
 cd kubernetes-ansible
 cat ~/.ssh/id_rsa.pub > ssh-key.pub
 vagrant up
-for a in 11 12 21 22 99; do ssh 192.168.50.${a} exit; done
+for a in 11 12 13 21 22 99; do ssh 192.168.50.${a} exit; done
 ansible-playbook -i yum-proxy -b -u vagrant yum-proxy.yml
 cp group_vars/all.yml.vagrant group_vars/all.yml
 ansible-playbook -i vagrant -b -u vagrant cluster.yml
@@ -29,6 +29,7 @@ After a while (5 mins or more) we have to see this result:
 NAME   STATUS    AGE
 master1   NotReady     11m
 master2   NotReady     11m
+master3   NotReady     11m
 node1     NotReady     11m
 node2     NotReady     11m
 ```
