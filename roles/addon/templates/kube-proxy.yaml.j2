@@ -99,6 +99,11 @@ spec:
       labels:
         k8s-app: kube-proxy
     spec:
+      tolerations:
+      - operator: "Exists"
+        effect: "NoExecute"
+      - operator: "Exists"
+        effect: "NoSchedule"
       containers:
       - command:
         - /usr/local/bin/kube-proxy
@@ -139,7 +144,6 @@ spec:
           path: /lib/modules
           type: ""
         name: lib-modules
-  templateGeneration: 1
   updateStrategy:
     rollingUpdate:
       maxUnavailable: 1
