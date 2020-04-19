@@ -7,7 +7,7 @@ The project has a built in manual testing environment, which has the following p
  
 Before start testing let's talk about the infrastructure behind. Vagrant file contains 3 type of machine:
 
- * master node, by default it contains 2 master nodes, but one of them is optional typically master2
+ * master node, by default it contains 3 master nodes
  * minion node, by default 2
  * squid proxy node, this node is optional and only caches yum packages
  
@@ -19,6 +19,7 @@ cat ~/.ssh/id_rsa.pub > ssh-key.pub
 vagrant up
 for a in 11 12 21 22 99; do ssh 192.168.50.${a} exit; done
 ansible-playbook -i yum-proxy -b -u vagrant yum-proxy.yml
+cp group_vars/all.yml.vagrant group_vars/all.yml
 ansible-playbook -i vagrant -b -u vagrant cluster.yml
 ```
 
