@@ -1,6 +1,5 @@
 ---
 - name: create kubernetes manifests config directory
-  when: haproxy
   file: path={{ manifest_config_dir }} state=directory
 
 - name: Write etcd static pods file

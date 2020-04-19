@@ -15,7 +15,7 @@ api_image: gcr.io/google_containers/kube-apiserver-amd64:{{ k8s_version }}
 controller_image: gcr.io/google_containers/kube-controller-manager-amd64:{{ k8s_version }}
 scheduler_image: gcr.io/google_containers/kube-scheduler-amd64:{{ k8s_version }}
 kube_proxy_image: gcr.io/google_containers/kube-proxy-amd64:{{ k8s_version }}
-etcd_image: k8s.gcr.io/etcd:3.3.20
+etcd_image: k8s.gcr.io/etcd:3.3.10
 
 #- cluster service ip range
 service_ip_range: 10.96.0.0/24
