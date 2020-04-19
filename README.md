@@ -31,7 +31,7 @@ Ansible roles
 
 Note - Addon roles should be run after cluster is fully operational. Addons are in [addons.yml](addons.yml) playbook.
 After cluster is up and running then run `addon.yml` to deploy add-ons.
-Included addons are: `flannel network`, `kube-proxy`, `kube-dns` and `kube-dashboard`.
+Included addons are: `flannel network`, `kube-proxy`, `coredns`.
 ```
 ansible-playbook -i inventory addon.yml
 ```
