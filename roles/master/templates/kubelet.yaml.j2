@@ -66,6 +66,6 @@ staticPodPath: /etc/kubernetes/manifests
 streamingConnectionIdleTimeout: 4h0m0s
 syncFrequency: 1m0s
 volumeStatsAggPeriod: 1m0s
-tlsCertFile: "/var/lib/kubelet/node-{{ ansible_hostname }}.pem"
-tlsPrivateKeyFile: "/var/lib/kubelet/node-{{ ansible_hostname }}-key.pem"
+tlsCertFile: "{{ cert_dir }}/node-{{ ansible_hostname }}.pem"
+tlsPrivateKeyFile: "{{ cert_dir }}/node-{{ ansible_hostname }}-key.pem"
 readOnlyPort: 10255

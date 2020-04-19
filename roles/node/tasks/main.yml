@@ -1,44 +1,24 @@
 ---
-- name: Create kubernetes config directory
+- name: Copy kubelet-service file
+  template:
+    src: kubelet.service.j2
+    dest: /etc/systemd/system/kubelet.service
+    owner: root
+    group: root
+    mode: 0644
+  register: kubelet_service
+
+- name: Create kubernetes manifest config directory
   file:
     path: "{{ manifest_config_dir }}"
     state: directory
   register: manifest
 
-- name: Copy API config file
-  template:
-    src: kube-apiserver.yaml.j2
-    dest: "{{ manifest_config_dir }}/kube-apiserver.yaml"
-  register: api
-
-- name: Copy controller config file
-  template:
-    src: kube-controller-manager.yaml.j2
-    dest: "{{ manifest_config_dir }}/kube-controller-manager.yaml"
-  register: controller
-
-- name: Copy scheduler config file
-  template:
-    src: kube-scheduler.yaml.j2
-    dest: "{{ manifest_config_dir }}/kube-scheduler.yaml"
-  register: scheduler
-
-- name: Copy kubeadm config file
-  template:
-    src: kubeadminconfig.j2
-    dest: "{{ kube_config_dir }}/kubeadminconfig"
-  register: config
-
-- name: Copy kubeconfig file to use with command line tool kubectl
-  template:
-    src: kubeconfig.j2
-    dest: "{{ kube_config_dir }}/kubeconfig"
-
-- name: Copy kubelet-config file
-  template:
-    src: kubelet.j2
-    dest: "{{ kube_config_dir }}/kubelet"
-  register: kubelet_conf
+- name: Create kubernetes config directory
+  file:
+    path: "{{ kube_config_dir }}"
+    state: directory
+  register: config_dir
 
 - name: copy openssl conf file to create certificate
   template: src="openssl.conf.j2" dest={{ cert_dir }}/openssl.conf
@@ -50,14 +30,17 @@
     - "openssl req -new -key {{ cert_dir }}/node-{{ ansible_hostname }}-key.pem -out {{ cert_dir }}/node-{{ ansible_hostname }}.csr -subj '/CN=system:node:{{ ansible_hostname }}/O=system:nodes'"
     - "openssl x509 -req -in {{ cert_dir }}/node-{{ ansible_hostname }}.csr -CA {{ cert_dir }}/ca.pem -CAkey {{ cert_dir }}/ca-key.pem -CAcreateserial -out {{ cert_dir }}/node-{{ ansible_hostname }}.pem -days 3666 -extfile {{ cert_dir }}/openssl.conf"
 
-- name: Copy kubelet-service file
+- name: Copy kubeadmin config file
   template:
-    src: kubelet.service.j2
-    dest: /etc/systemd/system/kubelet.service
-    owner: root
-    group: root
-    mode: 0644
-  register: kubelet_service
+    src: kubeadminconfig.j2
+    dest: "{{ kube_config_dir }}/kubeadminconfig"
+  register: config
+
+- name: Copy kubelet config file
+  template:
+    src: kubelet.j2
+    dest: "{{ kube_config_dir }}/kubelet"
+  register: kubeletconfig
 
 - name: Copy kubelet.yaml
   template:
@@ -68,16 +51,6 @@
   template:
     src: kubelet.conf.j2
     dest: "{{ kube_config_dir }}/kubelet.conf"
-  
-- name: Copy controller-manager.conf
-  template:
-    src: controller-manager.conf.j2
-    dest: "{{ kube_config_dir }}/controller-manager.conf"
-
-- name: Copy scheduler.conf.j2
-  template:
-    src: scheduler.conf.j2
-    dest: "{{ kube_config_dir }}/scheduler.conf"
 
 - name: Copy kubectl binary and kubelet binary download script
   copy:
@@ -85,23 +58,17 @@
     dest: /opt/getkube.sh
 
 - name: Download k8s binary
-  shell: "bash /opt/getkube.sh {{ k8s_version }} BOTH"
-
+  shell: "bash /opt/getkube.sh {{ k8s_version }} NODE"
+  
 - name: Create kubelet directory
   file:
     path: /var/lib/kubelet
     state: directory
   
-- name: Start and enable kubelet service
+- name: Start and enable kubelet on node
   service:
     name: kubelet
     enabled: yes
     state: started
     daemon_reload: yes
-  register: kubelet_start
-
-- name: Restart kubelet after config changes
-  service:
-    name: kubelet
-    state: restarted
-  when: openssl_cert is changed or kubelet_service is changed or kubelet_conf is changed
+  register: kubelet_start_node

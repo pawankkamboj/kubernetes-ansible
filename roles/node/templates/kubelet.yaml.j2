@@ -2,11 +2,13 @@ address: 0.0.0.0
 apiVersion: kubelet.config.k8s.io/v1beta1
 authentication:
   anonymous:
+    enabled: false
+  webhook:
     enabled: true
   x509:
     clientCAFile: /etc/kubernetes/pki/ca.pem
 authorization:
-  mode: AlwaysAllow
+  mode: Webhook
 cgroupDriver: cgroupfs
 cgroupsPerQOS: true
 clusterDNS:
@@ -58,11 +60,12 @@ registryBurst: 10
 registryPullQPS: 5
 resolvConf: /etc/resolv.conf
 rotateCertificates: false
-runtimeRequestTimeout: 2m0s
+runtimeRequestTimeout: "10m"
 serializeImagePulls: true
 staticPodPath: /etc/kubernetes/manifests
 streamingConnectionIdleTimeout: 4h0m0s
 syncFrequency: 1m0s
 volumeStatsAggPeriod: 1m0s
-clientCAFile: "/etc/kubernetes/pki/ca.pem"
+tlsCertFile: "{{ cert_dir }}/node-{{ ansible_hostname }}.pem"
+tlsPrivateKeyFile: "{{ cert_dir }}/node-{{ ansible_hostname }}-key.pem"
 readOnlyPort: 10255
